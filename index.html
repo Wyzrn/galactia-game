@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Galactica - Enhanced</title>
+    <title>Space Galactica - Ultimate Edition</title>
     <style>
         * {
             margin: 0;
@@ -43,7 +43,7 @@
             width: 32px;
             height: 32px;
             image-rendering: pixelated;
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect x="14" y="0" width="4" height="8" fill="%2300ff00"/><rect x="10" y="8" width="12" height="4" fill="%2300ff00"/><rect x="12" y="12" width="8" height="4" fill="%2300ff00"/><rect x="8" y="16" width="16" height="4" fill="%2300ff00"/><rect x="6" y="20" width="20" height="4" fill="%2300ff00"/><rect x="4" y="24" width="24" height="4" fill="%2300ff00"/><rect x="12" y="28" width="8" height="4" fill="%2300aa00"/><rect x="4" y="16" width="4" height="4" fill="%2300aa00"/><rect x="24" y="16" width="4" height="4" fill="%2300aa00"/><rect x="0" y="20" width="4" height="4" fill="%2300aa00"/><rect x="28" y="20" width="4" height="4" fill="%2300aa00"/></svg>');
+            transition: transform 0.3s;
         }
 
         .enemy {
@@ -71,12 +71,53 @@
             background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="6" y="0" width="12" height="4" fill="%23ff4400"/><rect x="4" y="4" width="16" height="4" fill="%23ff4400"/><rect x="2" y="8" width="20" height="8" fill="%23ff4400"/><rect x="4" y="16" width="16" height="4" fill="%23ff4400"/><rect x="6" y="20" width="12" height="4" fill="%23ff2200"/><rect x="0" y="10" width="4" height="4" fill="%23ffffff"/><rect x="20" y="10" width="4" height="4" fill="%23ffffff"/></svg>');
         }
 
+        .enemy-sniper {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="10" y="0" width="4" height="8" fill="%2300aaff"/><rect x="8" y="8" width="8" height="4" fill="%2300aaff"/><rect x="6" y="12" width="12" height="4" fill="%2300aaff"/><rect x="4" y="16" width="16" height="4" fill="%2300aaff"/><rect x="8" y="20" width="8" height="4" fill="%230088cc"/><rect x="0" y="12" width="6" height="4" fill="%230088cc"/><rect x="18" y="12" width="6" height="4" fill="%230088cc"/></svg>');
+        }
+
+        .enemy-bomber {
+            width: 28px;
+            height: 28px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><rect x="12" y="0" width="4" height="6" fill="%2300ff88"/><rect x="8" y="6" width="12" height="4" fill="%2300ff88"/><rect x="4" y="10" width="20" height="8" fill="%2300ff88"/><rect x="6" y="18" width="16" height="4" fill="%2300ff88"/><rect x="10" y="22" width="8" height="6" fill="%2300cc66"/><rect x="0" y="14" width="4" height="4" fill="%23ffffff"/><rect x="24" y="14" width="4" height="4" fill="%23ffffff"/></svg>');
+        }
+
+        .enemy-shield {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="8" y="0" width="8" height="4" fill="%23888888"/><rect x="4" y="4" width="16" height="4" fill="%23888888"/><rect x="2" y="8" width="20" height="8" fill="%23888888"/><rect x="4" y="16" width="16" height="4" fill="%23888888"/><rect x="8" y="20" width="8" height="4" fill="%23666666"/><rect x="10" y="8" width="4" height="8" fill="%23aaaaaa"/></svg>');
+        }
+
+        .enemy-spawner {
+            width: 36px;
+            height: 24px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="36" height="24" viewBox="0 0 36 24"><rect x="14" y="0" width="8" height="4" fill="%23aa88ff"/><rect x="10" y="4" width="16" height="4" fill="%23aa88ff"/><rect x="6" y="8" width="24" height="8" fill="%23aa88ff"/><rect x="10" y="16" width="16" height="4" fill="%23aa88ff"/><rect x="14" y="20" width="8" height="4" fill="%238866cc"/><rect x="0" y="10" width="6" height="4" fill="%238866cc"/><rect x="30" y="10" width="6" height="4" fill="%238866cc"/></svg>');
+        }
+
+        .enemy-berserker {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="8" y="0" width="8" height="4" fill="%23ff0088"/><rect x="4" y="4" width="16" height="4" fill="%23ff0088"/><rect x="0" y="8" width="24" height="8" fill="%23ff0088"/><rect x="4" y="16" width="16" height="4" fill="%23ff0088"/><rect x="8" y="20" width="8" height="4" fill="%23cc0066"/><rect x="0" y="0" width="4" height="4" fill="%23ffffff"/><rect x="20" y="0" width="4" height="4" fill="%23ffffff"/></svg>');
+        }
+
+        .enemy-teleporter {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="10" y="0" width="4" height="4" fill="%23ff88ff"/><rect x="8" y="4" width="8" height="4" fill="%23ff88ff"/><rect x="6" y="8" width="12" height="8" fill="%23ff88ff"/><rect x="8" y="16" width="8" height="4" fill="%23ff88ff"/><rect x="10" y="20" width="4" height="4" fill="%23cc44cc"/><rect x="2" y="10" width="4" height="4" fill="%23ffffff"/><rect x="18" y="10" width="4" height="4" fill="%23ffffff"/></svg>');
+        }
+
+        .enemy-laser {
+            width: 28px;
+            height: 20px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="0 0 28 20"><rect x="10" y="0" width="8" height="4" fill="%23ff4444"/><rect x="6" y="4" width="16" height="4" fill="%23ff4444"/><rect x="2" y="8" width="24" height="4" fill="%23ff4444"/><rect x="6" y="12" width="16" height="4" fill="%23ff4444"/><rect x="10" y="16" width="8" height="4" fill="%23cc2222"/><rect x="0" y="9" width="2" height="2" fill="%23ffffff"/><rect x="26" y="9" width="2" height="2" fill="%23ffffff"/></svg>');
+        }
+
+        .enemy-stealth {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="10" y="2" width="4" height="4" fill="%2344ff44" opacity="0.7"/><rect x="8" y="6" width="8" height="4" fill="%2344ff44" opacity="0.7"/><rect x="6" y="10" width="12" height="4" fill="%2244ff44" opacity="0.7"/><rect x="8" y="14" width="8" height="4" fill="%2244ff44" opacity="0.7"/><rect x="10" y="18" width="4" height="4" fill="%2222cc22" opacity="0.7"/></svg>');
+        }
+
+        .enemy-zigzag {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="8" y="0" width="8" height="4" fill="%23ffff44"/><rect x="4" y="4" width="16" height="4" fill="%23ffff44"/><rect x="2" y="8" width="20" height="8" fill="%23ffff44"/><rect x="4" y="16" width="16" height="4" fill="%23ffff44"/><rect x="8" y="20" width="8" height="4" fill="%23cccc22"/><rect x="0" y="4" width="4" height="4" fill="%23ffffff"/><rect x="20" y="16" width="4" height="4" fill="%23ffffff"/></svg>');
+        }
+
         .boss {
             position: absolute;
             width: 80px;
             height: 60px;
             image-rendering: pixelated;
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="60" viewBox="0 0 80 60"><rect x="30" y="0" width="20" height="8" fill="%23ff0088"/><rect x="20" y="8" width="40" height="8" fill="%23ff0088"/><rect x="10" y="16" width="60" height="8" fill="%23ff0088"/><rect x="0" y="24" width="80" height="12" fill="%23ff0088"/><rect x="10" y="36" width="60" height="8" fill="%23ff0088"/><rect x="20" y="44" width="40" height="8" fill="%23ff0088"/><rect x="30" y="52" width="20" height="8" fill="%23cc0066"/><rect x="0" y="20" width="10" height="8" fill="%23cc0066"/><rect x="70" y="20" width="10" height="8" fill="%23cc0066"/></svg>');
         }
 
         .bullet {
@@ -106,18 +147,42 @@
             box-shadow: 0 0 8px #ff0088;
         }
 
+        .laser-beam {
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(to bottom, #ff0000, #ffaa00);
+            border-radius: 2px;
+            box-shadow: 0 0 10px #ff0000;
+            animation: pulse 0.1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scaleX(1); opacity: 1; }
+            50% { transform: scaleX(1.5); opacity: 0.8; }
+        }
+
         .powerup {
             position: absolute;
             width: 20px;
             height: 20px;
             border-radius: 50%;
             animation: powerupFloat 2s ease-in-out infinite alternate, powerupGlow 1s ease-in-out infinite alternate;
-            border: 2px solid;
+            border: 3px solid;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 10px;
             font-weight: bold;
+        }
+
+        .powerup-permanent {
+            border-color: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .powerup-temporary {
+            border-color: #aa44ff;
+            box-shadow: 0 0 10px #aa44ff;
         }
 
         @keyframes powerupFloat {
@@ -167,6 +232,15 @@
             z-index: 100;
             text-align: right;
             font-size: 14px;
+        }
+
+        #highScores {
+            position: absolute;
+            top: 120px;
+            left: 20px;
+            z-index: 100;
+            font-size: 14px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         #gameOver {
@@ -323,6 +397,21 @@
             0% { transform: translate(-50%, -50%) scale(1); }
             100% { transform: translate(-50%, -50%) scale(1.05); }
         }
+
+        .temp-powerup-timer {
+            position: absolute;
+            bottom: 100px;
+            left: 20px;
+            z-index: 100;
+            font-size: 16px;
+            color: #aa44ff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        @keyframes fadeUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-50px); }
+        }
     </style>
 </head>
 <body>
@@ -331,6 +420,11 @@
             <div>Score: <span id="score">0</span></div>
             <div>Wave: <span id="wave">1</span></div>
             <div>Enemies: <span id="enemyCount">0</span></div>
+        </div>
+
+        <div id="highScores">
+            <div>High Score: <span id="highScore">0</span></div>
+            <div>Top Wave: <span id="topWave">1</span></div>
         </div>
 
         <div id="powerupDisplay">
@@ -349,13 +443,16 @@
             Lives: <span id="livesCount">3</span>
         </div>
 
+        <div class="temp-powerup-timer" id="tempPowerupTimer"></div>
+
         <div id="instructions">
-            <h3>SPACE GALACTICA - ENHANCED</h3>
+            <h3>SPACE GALACTICA - ULTIMATE EDITION</h3>
             <p>🚀 Move: A/D Keys or Arrow Keys</p>
             <p>🔫 Shoot: Spacebar or Click</p>
-            <p>🎯 Collect powerups for permanent upgrades!</p>
-            <p>👾 Face different enemy types and epic bosses!</p>
-            <p>💚 Extra lives available - don't give up!</p>
+            <p>🟢 Green Powerups: Permanent upgrades!</p>
+            <p>🟣 Purple Powerups: Temporary super boosts!</p>
+            <p>👾 Face 12+ enemy types and epic bosses!</p>
+            <p>💚 Extra lives are extremely rare - treasure them!</p>
             <button onclick="startGame()">Launch Mission</button>
         </div>
 
@@ -363,6 +460,7 @@
             <h2>MISSION FAILED</h2>
             <p>Final Score: <span id="finalScore">0</span></p>
             <p>Waves Completed: <span id="finalWave">0</span></p>
+            <p id="newRecord" style="color: #ffff00; font-size: 20px; display: none;">NEW RECORD!</p>
             <button onclick="restartGame()">Retry Mission</button>
         </div>
     </div>
@@ -383,6 +481,8 @@
             explosions: [],
             powerups: [],
             permanentPowerups: {},
+            temporaryPowerups: {},
+            tempPowerupTimer: {},
             score: 0,
             wave: 1,
             enemiesRemaining: 0,
@@ -391,21 +491,35 @@
             waveComplete: false,
             lastShoot: 0,
             boss: null,
-            bossSpawnTimer: 0
+            bossSpawnTimer: 0,
+            laserBeams: []
         };
 
-        // Enhanced powerup definitions - weaker but permanent
+        // High scores
+        let highScore = localStorage.getItem('spaceGalacticaHighScore') || 0;
+        let topWave = localStorage.getItem('spaceGalacticaTopWave') || 1;
+
+        // Enhanced powerup definitions
         const POWERUPS = {
-            RAPID: { name: 'Rapid Fire', color: '#ff8800', symbol: 'R', fireRateBoost: 0.15 },
-            SPREAD: { name: 'Spread Shot', color: '#ffff00', symbol: 'S', spreadShots: 1 },
-            POWER: { name: 'Power Shot', color: '#ff0088', symbol: 'P', damageBoost: 1 },
-            SPEED: { name: 'Speed Boost', color: '#00ffff', symbol: 'V', speedBoost: 1 },
-            SHIELD: { name: 'Shield Gen', color: '#0088ff', symbol: 'E', shieldRegen: 5 },
-            PIERCING: { name: 'Piercing', color: '#ffffff', symbol: 'X', pierce: true },
-            LIFE: { name: 'Extra Life', color: '#00ff88', symbol: '+', instant: true }
+            // Permanent powerups (green ring)
+            RAPID: { name: 'Rapid Fire', color: '#ff8800', symbol: 'R', fireRateBoost: 0.15, permanent: true },
+            SPREAD: { name: 'Spread Shot', color: '#ffff00', symbol: 'S', spreadShots: 1, permanent: true },
+            POWER: { name: 'Power Shot', color: '#ff0088', symbol: 'P', damageBoost: 1, permanent: true },
+            SPEED: { name: 'Speed Boost', color: '#00ffff', symbol: 'V', speedBoost: 1, permanent: true },
+            SHIELD: { name: 'Shield Gen', color: '#0088ff', symbol: 'E', shieldRegen: 5, permanent: true },
+            PIERCING: { name: 'Piercing', color: '#ffffff', symbol: 'X', pierce: true, permanent: true },
+            LIFE: { name: 'Extra Life', color: '#00ff88', symbol: '+', instant: true, permanent: true },
+            
+            // Temporary powerups (purple ring) - super powerful but short duration
+            MEGA_RAPID: { name: 'Mega Rapid', color: '#ff4400', symbol: 'M', fireRateBoost: 0.9, permanent: false, duration: 15000 },
+            SUPER_SPREAD: { name: 'Super Spread', color: '#44ff44', symbol: 'U', spreadShots: 5, permanent: false, duration: 12000 },
+            TRIPLE_DAMAGE: { name: 'Triple Damage', color: '#ff44ff', symbol: 'T', damageBoost: 5, permanent: false, duration: 10000 },
+            INVINCIBLE: { name: 'Invincible', color: '#ffff44', symbol: 'I', invincible: true, permanent: false, duration: 8000 },
+            LASER_STORM: { name: 'Laser Storm', color: '#44ffff', symbol: 'L', laserStorm: true, permanent: false, duration: 10000 },
+            TIME_SLOW: { name: 'Time Slow', color: '#8844ff', symbol: 'Z', timeSlow: true, permanent: false, duration: 15000 }
         };
 
-        // Enemy type definitions
+        // Enhanced enemy type definitions with wave requirements
         const ENEMY_TYPES = {
             BASIC: {
                 className: 'enemy-basic',
@@ -413,7 +527,8 @@
                 speed: 1,
                 shootRate: 0.0005,
                 score: 100,
-                size: 24
+                size: 24,
+                minWave: 1
             },
             FAST: {
                 className: 'enemy-fast',
@@ -421,7 +536,8 @@
                 speed: 2.5,
                 shootRate: 0.0003,
                 score: 150,
-                size: 24
+                size: 24,
+                minWave: 2
             },
             HEAVY: {
                 className: 'enemy-heavy',
@@ -429,7 +545,8 @@
                 speed: 0.7,
                 shootRate: 0.001,
                 score: 300,
-                size: 32
+                size: 32,
+                minWave: 4
             },
             KAMIKAZE: {
                 className: 'enemy-kamikaze',
@@ -438,7 +555,126 @@
                 shootRate: 0,
                 score: 200,
                 size: 24,
-                kamikaze: true
+                kamikaze: true,
+                minWave: 3
+            },
+            SNIPER: {
+                className: 'enemy-sniper',
+                health: 2,
+                speed: 0.5,
+                shootRate: 0.002,
+                score: 250,
+                size: 24,
+                minWave: 5,
+                sniper: true
+            },
+            BOMBER: {
+                className: 'enemy-bomber',
+                health: 4,
+                speed: 1.2,
+                shootRate: 0.0008,
+                score: 400,
+                size: 28,
+                minWave: 6,
+                bomber: true
+            },
+            SHIELD: {
+                className: 'enemy-shield',
+                health: 8,
+                speed: 0.8,
+                shootRate: 0.0004,
+                score: 500,
+                size: 24,
+                minWave: 7,
+                shield: true
+            },
+            SPAWNER: {
+                className: 'enemy-spawner',
+                health: 6,
+                speed: 0.5,
+                shootRate: 0,
+                score: 600,
+                size: 36,
+                minWave: 8,
+                spawner: true
+            },
+            BERSERKER: {
+                className: 'enemy-berserker',
+                health: 2,
+                speed: 1.5,
+                shootRate: 0.001,
+                score: 350,
+                size: 24,
+                minWave: 9,
+                berserker: true
+            },
+            TELEPORTER: {
+                className: 'enemy-teleporter',
+                health: 3,
+                speed: 1,
+                shootRate: 0.0006,
+                score: 450,
+                size: 24,
+                minWave: 10,
+                teleporter: true
+            },
+            LASER: {
+                className: 'enemy-laser',
+                health: 5,
+                speed: 0.6,
+                shootRate: 0,
+                score: 700,
+                size: 28,
+                minWave: 12,
+                laser: true
+            },
+            STEALTH: {
+                className: 'enemy-stealth',
+                health: 2,
+                speed: 2,
+                shootRate: 0.0005,
+                score: 400,
+                size: 24,
+                minWave: 11,
+                stealth: true
+            },
+            ZIGZAG: {
+                className: 'enemy-zigzag',
+                health: 3,
+                speed: 1.8,
+                shootRate: 0.0007,
+                score: 320,
+                size: 24,
+                minWave: 6,
+                zigzag: true
+            }
+        };
+
+        // Boss types with different abilities
+        const BOSS_TYPES = {
+            DESTROYER: {
+                color: '#ff0088',
+                health: 20,
+                abilities: ['multiShot', 'spawnMinions'],
+                movePattern: 'horizontal'
+            },
+            FORTRESS: {
+                color: '#8800ff',
+                health: 35,
+                abilities: ['laserBeam', 'shield'],
+                movePattern: 'stationary'
+            },
+            MOTHERSHIP: {
+                color: '#00ff88',
+                health: 50,
+                abilities: ['teleport', 'rapidFire', 'spawnMinions'],
+                movePattern: 'circular'
+            },
+            ANNIHILATOR: {
+                color: '#ff4400',
+                health: 70,
+                abilities: ['megaLaser', 'bulletHell', 'ram'],
+                movePattern: 'aggressive'
             }
         };
 
@@ -455,8 +691,16 @@
         const activePowerupsEl = document.getElementById('activePowerups');
         const bossHealthBarEl = document.getElementById('bossHealthBar');
         const bossHealthFillEl = document.getElementById('bossHealthFill');
+        const highScoreEl = document.getElementById('highScore');
+        const topWaveEl = document.getElementById('topWave');
+        const tempPowerupTimerEl = document.getElementById('tempPowerupTimer');
+        const newRecordEl = document.getElementById('newRecord');
 
         let lastTime = 0;
+
+        // Initialize high scores display
+        highScoreEl.textContent = highScore;
+        topWaveEl.textContent = topWave;
 
         // Create starfield
         function createStars() {
@@ -472,19 +716,85 @@
             }
         }
 
-        // Create player
+        // Create player with visual upgrades
         function createPlayer() {
             const player = document.createElement('div');
             player.className = 'player';
             player.id = 'player';
             player.style.left = gameState.player.x + 'px';
             player.style.top = gameState.player.y + 'px';
+            updatePlayerVisuals();
             canvas.appendChild(player);
+        }
+
+        function updatePlayerVisuals() {
+            const player = document.getElementById('player');
+            if (!player) return;
+
+            let shipSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">';
+            
+            // Base ship
+            shipSvg += '<rect x="14" y="0" width="4" height="8" fill="#00ff00"/>';
+            shipSvg += '<rect x="10" y="8" width="12" height="4" fill="#00ff00"/>';
+            shipSvg += '<rect x="12" y="12" width="8" height="4" fill="#00ff00"/>';
+            shipSvg += '<rect x="8" y="16" width="16" height="4" fill="#00ff00"/>';
+            shipSvg += '<rect x="6" y="20" width="20" height="4" fill="#00ff00"/>';
+            shipSvg += '<rect x="4" y="24" width="24" height="4" fill="#00ff00"/>';
+            shipSvg += '<rect x="12" y="28" width="8" height="4" fill="#00aa00"/>';
+
+            // Wing upgrades for speed
+            if (gameState.permanentPowerups.SPEED > 0) {
+                shipSvg += '<rect x="0" y="18" width="6" height="8" fill="#00ffff"/>';
+                shipSvg += '<rect x="26" y="18" width="6" height="8" fill="#00ffff"/>';
+            }
+
+            // Weapon upgrades for power/rapid
+            if (gameState.permanentPowerups.POWER > 0 || gameState.permanentPowerups.RAPID > 0) {
+                shipSvg += '<rect x="6" y="4" width="4" height="8" fill="#ff4400"/>';
+                shipSvg += '<rect x="22" y="4" width="4" height="8" fill="#ff4400"/>';
+            }
+
+            // Shield generators
+            if (gameState.permanentPowerups.SHIELD > 0) {
+                shipSvg += '<rect x="2" y="16" width="4" height="4" fill="#0088ff"/>';
+                shipSvg += '<rect x="26" y="16" width="4" height="4" fill="#0088ff"/>';
+            }
+
+            // Spread shot indicators
+            if (gameState.permanentPowerups.SPREAD > 0) {
+                shipSvg += '<rect x="8" y="0" width="2" height="4" fill="#ffff00"/>';
+                shipSvg += '<rect x="22" y="0" width="2" height="4" fill="#ffff00"/>';
+            }
+
+            // Piercing upgrade glow
+            if (gameState.permanentPowerups.PIERCING) {
+                shipSvg += '<rect x="13" y="-2" width="6" height="4" fill="#ffffff" opacity="0.8"/>';
+            }
+
+            // Temporary powerup effects
+            if (gameState.temporaryPowerups.INVINCIBLE) {
+                player.style.filter = 'drop-shadow(0 0 10px #ffff44)';
+            } else if (gameState.temporaryPowerups.MEGA_RAPID) {
+                player.style.filter = 'drop-shadow(0 0 8px #ff4400)';
+            } else if (gameState.temporaryPowerups.TRIPLE_DAMAGE) {
+                player.style.filter = 'drop-shadow(0 0 8px #ff44ff)';
+            } else {
+                player.style.filter = 'none';
+            }
+
+            shipSvg += '</svg>';
+            player.style.backgroundImage = `url('data:image/svg+xml,${encodeURIComponent(shipSvg)}')`;
         }
 
         // Boss functions
         function shouldSpawnBoss() {
-            return gameState.wave % 5 === 0 && !gameState.boss;
+            return gameState.wave % 5 === 0 && !gameState.boss && gameState.enemies.length === 0 && gameState.enemiesRemaining === 0;
+        }
+
+        function getBossType() {
+            const bossLevel = Math.floor((gameState.wave - 1) / 5);
+            const types = Object.keys(BOSS_TYPES);
+            return types[bossLevel % types.length];
         }
 
         function spawnBoss() {
@@ -492,23 +802,47 @@
             showBossWarning();
             
             setTimeout(() => {
+                const bossType = getBossType();
+                const bossData = BOSS_TYPES[bossType];
+                const difficultyMultiplier = 1 + (gameState.wave / 10);
+                
                 const boss = {
                     x: window.innerWidth / 2 - 40,
                     y: -60,
-                    targetY: 100,
+                    targetY: bossData.movePattern === 'stationary' ? 50 : 100,
                     element: document.createElement('div'),
-                    health: 15 + (gameState.wave / 5) * 10,
-                    maxHealth: 15 + (gameState.wave / 5) * 10,
+                    type: bossType,
+                    health: Math.floor(bossData.health * difficultyMultiplier),
+                    maxHealth: Math.floor(bossData.health * difficultyMultiplier),
                     lastShot: Date.now(),
                     lastSpawn: Date.now(),
+                    lastAbility: Date.now(),
                     moveDirection: 1,
                     moveTimer: 0,
-                    phase: 'entering' // entering, fighting, dying
+                    phase: 'entering',
+                    abilities: [...bossData.abilities],
+                    movePattern: bossData.movePattern,
+                    shieldActive: false,
+                    shieldTimer: 0
                 };
                 
                 boss.element.className = 'boss';
                 boss.element.style.left = boss.x + 'px';
                 boss.element.style.top = boss.y + 'px';
+                
+                // Create boss SVG based on type
+                const bossColor = bossData.color;
+                const bossSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="60" viewBox="0 0 80 60">
+                    <rect x="30" y="0" width="20" height="8" fill="${bossColor}"/>
+                    <rect x="20" y="8" width="40" height="8" fill="${bossColor}"/>
+                    <rect x="10" y="16" width="60" height="8" fill="${bossColor}"/>
+                    <rect x="0" y="24" width="80" height="12" fill="${bossColor}"/>
+                    <rect x="10" y="36" width="60" height="8" fill="${bossColor}"/>
+                    <rect x="20" y="44" width="40" height="8" fill="${bossColor}"/>
+                    <rect x="30" y="52" width="20" height="8" fill="${bossColor.replace('ff', 'cc')}"/>
+                </svg>`;
+                
+                boss.element.style.backgroundImage = `url('data:image/svg+xml,${encodeURIComponent(bossSvg)}')`;
                 canvas.appendChild(boss.element);
                 gameState.boss = boss;
                 
@@ -522,7 +856,7 @@
             warning.className = 'boss-warning';
             warning.innerHTML = `
                 <h2 style="margin: 0 0 10px 0;">⚠️ WARNING ⚠️</h2>
-                <p style="margin: 0; font-size: 24px;">BOSS APPROACHING</p>
+                <p style="margin: 0; font-size: 24px;">${getBossType().toUpperCase()} APPROACHING</p>
             `;
             canvas.appendChild(warning);
             
@@ -538,27 +872,54 @@
             
             const boss = gameState.boss;
             boss.moveTimer += deltaTime;
+            const timeMultiplier = gameState.temporaryPowerups.TIME_SLOW ? 0.3 : 1;
             
             if (boss.phase === 'entering') {
-                boss.y += 2;
+                boss.y += 2 * timeMultiplier;
                 if (boss.y >= boss.targetY) {
                     boss.phase = 'fighting';
                 }
             } else if (boss.phase === 'fighting') {
-                // Boss movement pattern
-                boss.x += Math.sin(boss.moveTimer * 0.001) * 1.5;
-                boss.x = Math.max(40, Math.min(window.innerWidth - 120, boss.x));
-                
-                // Boss shooting
-                if (Date.now() - boss.lastShot > 1000) {
-                    shootBossBullet(boss.x + 40, boss.y + 60);
-                    boss.lastShot = Date.now();
+                // Boss movement patterns
+                switch (boss.movePattern) {
+                    case 'horizontal':
+                        boss.x += Math.sin(boss.moveTimer * 0.001) * 1.5 * timeMultiplier;
+                        break;
+                    case 'circular':
+                        boss.x += Math.sin(boss.moveTimer * 0.002) * 2 * timeMultiplier;
+                        boss.y += Math.cos(boss.moveTimer * 0.002) * 0.5 * timeMultiplier;
+                        break;
+                    case 'aggressive':
+                        // Move towards player
+                        const dx = gameState.player.x - boss.x;
+                        boss.x += Math.sign(dx) * 0.8 * timeMultiplier;
+                        if (Math.abs(dx) < 100) {
+                            boss.y += 0.5 * timeMultiplier;
+                        }
+                        break;
+                    case 'stationary':
+                        // Barely moves
+                        boss.x += Math.sin(boss.moveTimer * 0.0005) * 0.5 * timeMultiplier;
+                        break;
                 }
                 
-                // Boss spawns minions
-                if (Date.now() - boss.lastSpawn > 3000) {
-                    spawnBossMinion();
-                    boss.lastSpawn = Date.now();
+                boss.x = Math.max(40, Math.min(window.innerWidth - 120, boss.x));
+                boss.y = Math.max(30, Math.min(200, boss.y));
+                
+                // Boss abilities
+                if (Date.now() - boss.lastAbility > 2000) {
+                    const ability = boss.abilities[Math.floor(Math.random() * boss.abilities.length)];
+                    executeBossAbility(boss, ability);
+                    boss.lastAbility = Date.now();
+                }
+                
+                // Shield mechanics
+                if (boss.shieldActive) {
+                    boss.shieldTimer -= deltaTime;
+                    if (boss.shieldTimer <= 0) {
+                        boss.shieldActive = false;
+                        boss.element.style.filter = 'none';
+                    }
                 }
             }
             
@@ -566,29 +927,143 @@
             boss.element.style.top = boss.y + 'px';
         }
 
-        function spawnBossMinion() {
-            const minionType = Math.random() < 0.7 ? 'BASIC' : 'FAST';
-            const side = Math.random() < 0.5 ? -30 : window.innerWidth + 30;
+        function executeBossAbility(boss, ability) {
+            switch (ability) {
+                case 'multiShot':
+                    for (let i = -2; i <= 2; i++) {
+                        shootBossBullet(boss.x + 40 + i * 15, boss.y + 60);
+                    }
+                    break;
+                    
+                case 'spawnMinions':
+                    for (let i = 0; i < 2; i++) {
+                        const side = i === 0 ? -30 : window.innerWidth + 30;
+                        spawnBossMinion(side, boss.y + 30);
+                    }
+                    break;
+                    
+                case 'laserBeam':
+                    createLaserBeam(boss.x + 40, boss.y + 60);
+                    break;
+                    
+                case 'shield':
+                    boss.shieldActive = true;
+                    boss.shieldTimer = 5000;
+                    boss.element.style.filter = 'drop-shadow(0 0 15px #00ffff)';
+                    break;
+                    
+                case 'teleport':
+                    boss.x = Math.random() * (window.innerWidth - 120) + 40;
+                    createExplosion(boss.x + 40, boss.y + 30, 30);
+                    break;
+                    
+                case 'rapidFire':
+                    for (let i = 0; i < 8; i++) {
+                        setTimeout(() => {
+                            if (boss && boss.element.parentNode) {
+                                shootBossBullet(boss.x + 40, boss.y + 60);
+                            }
+                        }, i * 200);
+                    }
+                    break;
+                    
+                case 'megaLaser':
+                    createMegaLaser(boss.x + 40, boss.y + 60);
+                    break;
+                    
+                case 'bulletHell':
+                    for (let angle = 0; angle < 360; angle += 30) {
+                        const radians = angle * Math.PI / 180;
+                        const bulletX = boss.x + 40 + Math.cos(radians) * 30;
+                        const bulletY = boss.y + 30 + Math.sin(radians) * 30;
+                        shootDirectionalBossBullet(bulletX, bulletY, radians);
+                    }
+                    break;
+                    
+                case 'ram':
+                    // Boss charges towards player
+                    const targetX = gameState.player.x;
+                    const chargeSpeed = 5;
+                    const chargeInterval = setInterval(() => {
+                        if (!boss || !boss.element.parentNode) {
+                            clearInterval(chargeInterval);
+                            return;
+                        }
+                        
+                        const dx = targetX - boss.x;
+                        boss.x += Math.sign(dx) * chargeSpeed;
+                        boss.y += 2;
+                        
+                        if (boss.y > 300 || Math.abs(dx) < 50) {
+                            clearInterval(chargeInterval);
+                            boss.y = boss.targetY; // Return to original position
+                        }
+                    }, 50);
+                    break;
+            }
+        }
+
+        function createLaserBeam(x, y) {
+            const laser = {
+                x: x - 2,
+                y: y,
+                element: document.createElement('div'),
+                duration: 3000,
+                timer: 0,
+                isPlayer: false
+            };
             
-            spawnEnemyOfType(minionType, side, gameState.boss.y + 30);
+            laser.element.className = 'laser-beam';
+            laser.element.style.left = laser.x + 'px';
+            laser.element.style.top = laser.y + 'px';
+            laser.element.style.height = (window.innerHeight - y) + 'px';
+            canvas.appendChild(laser.element);
+            gameState.laserBeams.push(laser);
+        }
+
+        function createMegaLaser(x, y) {
+            for (let i = -1; i <= 1; i++) {
+                createLaserBeam(x + i * 20, y);
+            }
+        }
+
+        function shootDirectionalBossBullet(x, y, angle) {
+            const bullet = {
+                x: x,
+                y: y,
+                element: document.createElement('div'),
+                speed: 3,
+                angle: angle
+            };
+            
+            bullet.element.className = 'boss-bullet';
+            bullet.element.style.left = bullet.x + 'px';
+            bullet.element.style.top = bullet.y + 'px';
+            canvas.appendChild(bullet.element);
+            gameState.enemyBullets.push(bullet);
+        }
+
+        function spawnBossMinion(x, y) {
+            const availableTypes = Object.keys(ENEMY_TYPES).filter(type => 
+                ENEMY_TYPES[type].minWave <= gameState.wave
+            );
+            const minionType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+            spawnEnemyOfType(minionType, x, y);
         }
 
         function shootBossBullet(x, y) {
-            // Boss shoots multiple bullets
-            for (let i = -1; i <= 1; i++) {
-                const bullet = {
-                    x: x + i * 20,
-                    y: y,
-                    element: document.createElement('div'),
-                    speed: 3
-                };
-                
-                bullet.element.className = 'boss-bullet';
-                bullet.element.style.left = bullet.x + 'px';
-                bullet.element.style.top = bullet.y + 'px';
-                canvas.appendChild(bullet.element);
-                gameState.enemyBullets.push(bullet);
-            }
+            const bullet = {
+                x: x,
+                y: y,
+                element: document.createElement('div'),
+                speed: 3
+            };
+            
+            bullet.element.className = 'boss-bullet';
+            bullet.element.style.left = bullet.x + 'px';
+            bullet.element.style.top = bullet.y + 'px';
+            canvas.appendChild(bullet.element);
+            gameState.enemyBullets.push(bullet);
         }
 
         function updateBossHealth() {
@@ -600,24 +1075,30 @@
         function destroyBoss() {
             if (!gameState.boss) return;
             
-            createExplosion(gameState.boss.x + 40, gameState.boss.y + 30);
+            createExplosion(gameState.boss.x + 40, gameState.boss.y + 30, 100);
             gameState.boss.element.remove();
             gameState.boss = null;
             bossHealthBarEl.style.display = 'none';
             
-            // Boss gives lots of score and guaranteed powerup
-            gameState.score += 2000;
+            // Boss gives lots of score and guaranteed powerups
+            gameState.score += 5000 * (1 + gameState.wave / 10);
             scoreEl.textContent = gameState.score;
             
-            // Spawn 2-3 powerups
-            const powerupCount = 2 + Math.floor(Math.random() * 2);
+            // Spawn guaranteed powerups
+            const powerupCount = 3 + Math.floor(Math.random() * 2);
             for (let i = 0; i < powerupCount; i++) {
                 setTimeout(() => {
-                    spawnPowerup(window.innerWidth / 2 + (i - 1) * 50, 200);
-                }, i * 200);
+                    spawnPowerup(window.innerWidth / 2 + (i - Math.floor(powerupCount/2)) * 60, 200);
+                }, i * 300);
             }
             
             showBossDefeated();
+            
+            // Continue to next wave after boss
+            setTimeout(() => {
+                gameState.waveComplete = true;
+                nextWave();
+            }, 4000);
         }
 
         function showBossDefeated() {
@@ -639,7 +1120,7 @@
                 box-shadow: 0 0 30px #00ff00;
             `;
             msg.innerHTML = `
-                <h2 style="margin: 0 0 15px 0; color: #00ffff;">BOSS DEFEATED!</h2>
+                <h2 style="margin: 0 0 15px 0; color: #00ffff;">${gameState.boss ? gameState.boss.type.toUpperCase() : 'BOSS'} DEFEATED!</h2>
                 <p style="margin: 0; font-size: 20px;">Outstanding pilot!</p>
             `;
             canvas.appendChild(msg);
@@ -651,7 +1132,7 @@
             }, 4000);
         }
 
-        // Enhanced enemy spawning
+        // Enhanced enemy spawning with new types
         function spawnEnemies() {
             if (shouldSpawnBoss()) {
                 spawnBoss();
@@ -659,7 +1140,7 @@
             }
             
             console.log("Starting enemy spawn for wave", gameState.wave);
-            const baseEnemies = 4 + Math.floor(gameState.wave / 2);
+            const baseEnemies = Math.min(4 + Math.floor(gameState.wave / 2), 20); // Cap at 20 enemies
             gameState.enemiesRemaining = baseEnemies;
             gameState.enemySpawnTimer = 0;
             gameState.waveComplete = false;
@@ -671,16 +1152,24 @@
         function spawnSingleEnemy() {
             if (gameState.enemiesRemaining <= 0) return;
             
-            // Determine enemy type based on wave
+            // Get available enemy types for current wave
+            const availableTypes = Object.keys(ENEMY_TYPES).filter(type => 
+                ENEMY_TYPES[type].minWave <= gameState.wave
+            );
+            
+            // Weight selection based on wave progression
             let enemyType = 'BASIC';
             const rand = Math.random();
             
-            if (gameState.wave >= 3) {
-                if (rand < 0.1) enemyType = 'KAMIKAZE';
-                else if (rand < 0.3) enemyType = 'FAST';
-                else if (rand < 0.5 && gameState.wave >= 6) enemyType = 'HEAVY';
-            } else if (gameState.wave >= 2) {
-                if (rand < 0.2) enemyType = 'FAST';
+            if (gameState.wave >= 12) {
+                if (rand < 0.05) enemyType = availableTypes[availableTypes.length - 1]; // Latest enemy
+                else if (rand < 0.15) enemyType = availableTypes[Math.floor(availableTypes.length * 0.8)];
+                else if (rand < 0.35) enemyType = availableTypes[Math.floor(availableTypes.length * 0.6)];
+                else enemyType = availableTypes[Math.floor(Math.random() * Math.min(availableTypes.length, 6))];
+            } else {
+                // Progressive introduction
+                const maxIndex = Math.min(availableTypes.length - 1, Math.floor(gameState.wave / 2));
+                enemyType = availableTypes[Math.floor(Math.random() * (maxIndex + 1))];
             }
             
             spawnEnemyOfType(enemyType, Math.random() * (window.innerWidth - 50) + 25, -40);
@@ -697,283 +1186,305 @@
                 y: y,
                 element: document.createElement('div'),
                 lastShot: Date.now() + Math.random() * 1500,
+                lastAction: Date.now(),
                 movePattern: Math.floor(Math.random() * 4),
                 moveTimer: 0,
                 health: Math.floor(enemyData.health * difficultyMultiplier),
                 speed: enemyData.speed * (0.8 + Math.random() * 0.4),
-                maxHealth: Math.floor(enemyData.health * difficultyMultiplier)
+                maxHealth: Math.floor(enemyData.health * difficultyMultiplier),
+                shielded: enemyData.shield && Math.random() < 0.3,
+                stealthTimer: enemyData.stealth ? Math.random() * 3000 : 0,
+                teleportTimer: enemyData.teleporter ? 5000 + Math.random() * 3000 : 0,
+                berserkMode: false,
+                spawnedMinions: 0
             };
             
             enemy.element.className = `enemy ${enemyData.className}`;
             enemy.element.style.left = enemy.x + 'px';
             enemy.element.style.top = enemy.y + 'px';
+            
+            // Special visual effects
+            if (enemy.shielded) {
+                enemy.element.style.filter = 'drop-shadow(0 0 5px #00ffff)';
+            }
+            
             canvas.appendChild(enemy.element);
             gameState.enemies.push(enemy);
         }
 
-        // Shooting functions
-        function shootBullet(x, y, angle = 0, speed = 8, damage = 1) {
-            const bullet = {
-                x: x,
-                y: y,
-                angle: angle,
-                speed: speed,
-                damage: damage,
-                element: document.createElement('div')
-            };
+        function updateEnemyBehavior(enemy, adjustedDelta) {
+            const enemyData = ENEMY_TYPES[enemy.type];
+            const timeMultiplier = gameState.temporaryPowerups.TIME_SLOW ? 0.3 : 1;
             
-            bullet.element.className = 'bullet';
-            bullet.element.style.left = bullet.x + 'px';
-            bullet.element.style.top = bullet.y + 'px';
-            canvas.appendChild(bullet.element);
-            gameState.bullets.push(bullet);
+            switch(enemy.type) {
+                case 'ZIGZAG':
+                    enemy.x += Math.sin(enemy.moveTimer * 0.01) * 3 * timeMultiplier;
+                    break;
+                case 'TELEPORTER':
+                    enemy.teleportTimer -= adjustedDelta;
+                    if (enemy.teleportTimer <= 0) {
+                        enemy.x = Math.random() * (window.innerWidth - enemyData.size);
+                        createExplosion(enemy.x + enemyData.size / 2, enemy.y + enemyData.size / 2, 20);
+                        enemy.teleportTimer = 5000 + Math.random() * 5000;
+                    }
+                    break;
+                case 'BERSERKER':
+                    if (!enemy.berserkMode && enemy.health < enemy.maxHealth / 2) {
+                        enemy.berserkMode = true;
+                        enemy.speed *= 2;
+                        enemy.element.style.filter = 'brightness(1.5)';
+                    }
+                    if (enemy.berserkMode) {
+                        const dx = gameState.player.x - enemy.x;
+                        enemy.x += Math.sign(dx) * 2 * timeMultiplier;
+                    }
+                    break;
+                case 'STEALTH':
+                    enemy.stealthTimer -= adjustedDelta;
+                    if (enemy.stealthTimer <= 0) {
+                        enemy.element.style.opacity = enemy.element.style.opacity === '0.3' ? '1' : '0.3';
+                        enemy.stealthTimer = 2000 + Math.random() * 2000;
+                    }
+                    break;
+                case 'SPAWNER':
+                    if (Date.now() - enemy.lastAction > 5000 && enemy.spawnedMinions < 3) {
+                        spawnMinion(enemy);
+                        enemy.lastAction = Date.now();
+                        enemy.spawnedMinions++;
+                    }
+                    break;
+                case 'LASER':
+                    if (Date.now() - enemy.lastAction > 8000) {
+                        createLaserBeam(enemy.x + enemyData.size / 2, enemy.y + enemyData.size);
+                        enemy.lastAction = Date.now();
+                    }
+                    break;
+            }
         }
 
-        function playerShoot() {
-            const now = Date.now();
-            const baseRate = 250;
-            const rapidBonus = gameState.permanentPowerups.RAPID || 0;
-            const cooldown = Math.max(100, baseRate - (rapidBonus * baseRate));
-            
-            if (now - gameState.lastShoot < cooldown) return;
-            
-            const x = gameState.player.x + 16;
-            const y = gameState.player.y;
-            const damage = 1 + (gameState.permanentPowerups.POWER || 0);
-            const spreadLevel = gameState.permanentPowerups.SPREAD || 0;
-            
-            // Main shot
-            shootBullet(x, y, 0, 8, damage);
-            
-            // Spread shots
-            for (let i = 1; i <= spreadLevel; i++) {
-                shootBullet(x - i * 15, y, -i * 0.2, 8, damage);
-                shootBullet(x + i * 15, y, i * 0.2, 8, damage);
-            }
-            
-            gameState.lastShoot = now;
+        function spawnMinion(parentEnemy) {
+            const minionType = Math.random() < 0.5 ? 'BASIC' : 'FAST';
+            spawnEnemyOfType(minionType, parentEnemy.x + (Math.random() - 0.5) * 50, parentEnemy.y + 20);
         }
 
         function enemyShoot(enemy) {
             const enemyData = ENEMY_TYPES[enemy.type];
-            if (!enemyData.shootRate || Date.now() - enemy.lastShot < 2000 + Math.random() * 2000) return;
-            if (enemy.y < 50 || enemy.y > window.innerHeight - 200) return;
-            
-            const bullet = {
-                x: enemy.x + enemyData.size / 2,
-                y: enemy.y + enemyData.size,
-                element: document.createElement('div'),
-                speed: 3 + Math.random() * 2
-            };
-            
-            bullet.element.className = 'enemy-bullet';
-            bullet.element.style.left = bullet.x + 'px';
-            bullet.element.style.top = bullet.y + 'px';
-            canvas.appendChild(bullet.element);
-            gameState.enemyBullets.push(bullet);
-            enemy.lastShot = Date.now();
+            let bulletSpeed = 4;
+            let bulletClass = 'enemy-bullet';
+            let angle = undefined;
+
+            if (enemy.type === 'SNIPER') {
+                const dx = gameState.player.x + 16 - (enemy.x + enemyData.size / 2);
+                const dy = gameState.player.y + 16 - (enemy.y + enemyData.size / 2);
+                angle = Math.atan2(dy, dx);
+                bulletSpeed = 6;
+            } else if (enemy.type === 'BOMBER') {
+                for (let i = -1; i <= 1; i++) {
+                    createEnemyBullet(enemy.x + enemyData.size / 2 + i * 10, enemy.y + enemyData.size, undefined, bulletSpeed, bulletClass);
+                }
+                return;
+            } else if (enemy.type === 'HEAVY') {
+                bulletSpeed = 3;
+                bulletClass = 'boss-bullet';
+            }
+
+            createEnemyBullet(enemy.x + enemyData.size / 2, enemy.y + enemyData.size, angle, bulletSpeed, bulletClass);
         }
 
-        // Powerup functions
-        function spawnPowerup(x, y) {
-            if (Math.random() < 0.4) { // 40% chance
-                const powerupKeys = Object.keys(POWERUPS);
-                const powerupType = powerupKeys[Math.floor(Math.random() * powerupKeys.length)];
-                const powerupData = POWERUPS[powerupType];
-                
-                const powerup = {
-                    x: x,
-                    y: y,
-                    type: powerupType,
-                    element: document.createElement('div')
-                };
-                
-                powerup.element.className = 'powerup';
-                powerup.element.style.left = powerup.x + 'px';
-                powerup.element.style.top = powerup.y + 'px';
-                powerup.element.style.background = powerupData.color;
-                powerup.element.style.borderColor = powerupData.color;
-                powerup.element.style.color = '#000';
-                powerup.element.textContent = powerupData.symbol;
-                
-                canvas.appendChild(powerup.element);
-                gameState.powerups.push(powerup);
+        function createEnemyBullet(x, y, angle, speed, className = 'enemy-bullet') {
+            const bullet = {
+                x,
+                y,
+                angle,
+                speed,
+                element: document.createElement('div')
+            };
+            bullet.element.className = className;
+            bullet.element.style.left = x + 'px';
+            bullet.element.style.top = y + 'px';
+            canvas.appendChild(bullet.element);
+            gameState.enemyBullets.push(bullet);
+        }
+
+        function playerShoot() {
+            const now = Date.now();
+            let fireInterval = 300;
+            if (gameState.permanentPowerups.RAPID) {
+                fireInterval -= gameState.permanentPowerups.RAPID * 50;
             }
+            if (gameState.temporaryPowerups.MEGA_RAPID) {
+                fireInterval = 50;
+            }
+            if (now - gameState.lastShoot < fireInterval) return;
+            gameState.lastShoot = now;
+
+            let damage = 1 + (gameState.permanentPowerups.POWER || 0);
+            if (gameState.temporaryPowerups.TRIPLE_DAMAGE) {
+                damage *= 3;
+            }
+
+            let spreadCount = 1 + 2 * (gameState.permanentPowerups.SPREAD || 0);
+            if (gameState.temporaryPowerups.SUPER_SPREAD) {
+                spreadCount = 11;
+            }
+
+            const spreadAngle = 0.1;
+            for (let i = 0; i < spreadCount; i++) {
+                const offset = (i - (spreadCount - 1) / 2) * spreadAngle;
+                createPlayerBullet(gameState.player.x + 16, gameState.player.y, damage, offset);
+            }
+
+            if (gameState.temporaryPowerups.LASER_STORM) {
+                createPlayerLaser(gameState.player.x + 16);
+            }
+        }
+
+        function createPlayerBullet(x, y, damage, angle = 0) {
+            const bullet = {
+                x,
+                y,
+                speed: 10,
+                damage,
+                angle,
+                element: document.createElement('div')
+            };
+            bullet.element.className = 'bullet';
+            bullet.element.style.left = x + 'px';
+            bullet.element.style.top = y + 'px';
+            canvas.appendChild(bullet.element);
+            gameState.bullets.push(bullet);
+        }
+
+        function createPlayerLaser(x) {
+            const laser = {
+                x: x - 2,
+                y: 0,
+                height: gameState.player.y,
+                element: document.createElement('div'),
+                duration: 200,
+                timer: 0,
+                isPlayer: true
+            };
+            laser.element.className = 'laser-beam';
+            laser.element.style.background = 'linear-gradient(to top, #00ffff, #00aaff)';
+            laser.element.style.left = laser.x + 'px';
+            laser.element.style.top = '0px';
+            laser.element.style.height = laser.height + 'px';
+            canvas.appendChild(laser.element);
+            gameState.laserBeams.push(laser);
+        }
+
+        function spawnPowerup(x, y) {
+            if (Math.random() < 0.8) return;
+
+            const isPermanent = Math.random() < 0.5;
+            const types = Object.keys(POWERUPS).filter(t => POWERUPS[t].permanent === isPermanent && t !== 'LIFE');
+            let type = types[Math.floor(Math.random() * types.length)];
+            if (Math.random() < 0.02 && isPermanent) type = 'LIFE';
+
+            const powerupData = POWERUPS[type];
+            const powerup = {
+                x: x - 10,
+                y,
+                type,
+                element: document.createElement('div')
+            };
+            powerup.element.className = `powerup powerup-${isPermanent ? 'permanent' : 'temporary'}`;
+            powerup.element.style.left = powerup.x + 'px';
+            powerup.element.style.top = powerup.y + 'px';
+            powerup.element.style.borderColor = isPermanent ? '#00ff00' : '#aa44ff';
+            powerup.element.style.boxShadow = `0 0 10px ${isPermanent ? '#00ff00' : '#aa44ff'}`;
+            powerup.element.textContent = powerupData.symbol;
+            powerup.element.style.color = powerupData.color;
+            canvas.appendChild(powerup.element);
+            gameState.powerups.push(powerup);
         }
 
         function activatePowerup(type) {
-            const powerup = POWERUPS[type];
-            
-            if (powerup.instant) {
-                if (type === 'LIFE') {
-                    gameState.player.lives++;
-                    livesCountEl.textContent = gameState.player.lives;
-                    showLifeGained();
-                }
-            } else {
-                // Permanent powerup - stack levels
-                if (!gameState.permanentPowerups[type]) {
-                    gameState.permanentPowerups[type] = 0;
-                }
-                gameState.permanentPowerups[type] += 1;
-                
-                // Cap certain powerups
-                if (type === 'SPREAD' && gameState.permanentPowerups[type] > 3) {
-                    gameState.permanentPowerups[type] = 3;
-                }
-                if (type === 'RAPID' && gameState.permanentPowerups[type] > 0.7) {
-                    gameState.permanentPowerups[type] = 0.7;
-                }
-                if (type === 'SPEED' && gameState.permanentPowerups[type] > 4) {
-                    gameState.permanentPowerups[type] = 4;
-                }
-                
-                updatePowerupDisplay();
-                showPowerupGained(powerup.name);
+            const data = POWERUPS[type];
+            if (data.instant) {
+                if (type === 'LIFE') gameState.player.lives++;
+                livesCountEl.textContent = gameState.player.lives;
+                return;
             }
+            if (data.permanent) {
+                gameState.permanentPowerups[type] = (gameState.permanentPowerups[type] || 0) + 1;
+                updatePowerupDisplay();
+                updatePlayerVisuals();
+            } else {
+                gameState.temporaryPowerups[type] = Date.now() + data.duration;
+                updatePlayerVisuals();
+            }
+
+            const msg = document.createElement('div');
+            msg.textContent = data.name + ' Activated!';
+            msg.style.position = 'absolute';
+            msg.style.left = gameState.player.x + 'px';
+            msg.style.top = (gameState.player.y - 20) + 'px';
+            msg.style.color = data.color;
+            msg.style.animation = 'fadeUp 2s ease-out forwards';
+            canvas.appendChild(msg);
+            setTimeout(() => msg.remove(), 2000);
         }
 
-        function showLifeGained() {
-            const msg = document.createElement('div');
-            msg.style.cssText = `
-                position: absolute;
-                top: 30%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0, 100, 0, 0.9);
-                color: #00ff88;
-                padding: 20px 40px;
-                border: 2px solid #00ff88;
-                border-radius: 10px;
-                font-size: 24px;
-                text-align: center;
-                z-index: 500;
-                animation: fadeInOut 2s ease-in-out forwards;
-            `;
-            msg.innerHTML = `<strong>EXTRA LIFE!</strong>`;
-            canvas.appendChild(msg);
-            
-            setTimeout(() => {
-                if (msg.parentNode) {
-                    msg.remove();
+        function updateTemporaryPowerups() {
+            const now = Date.now();
+            let timers = [];
+            for (let type in gameState.temporaryPowerups) {
+                if (now > gameState.temporaryPowerups[type]) {
+                    delete gameState.temporaryPowerups[type];
+                    updatePlayerVisuals();
+                } else {
+                    const remaining = Math.ceil((gameState.temporaryPowerups[type] - now) / 1000);
+                    timers.push(`${POWERUPS[type].symbol}: ${remaining}s`);
                 }
-            }, 2000);
-        }
-
-        function showPowerupGained(name) {
-            const msg = document.createElement('div');
-            msg.style.cssText = `
-                position: absolute;
-                top: 70%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0, 50, 100, 0.8);
-                color: #00ffff;
-                padding: 15px 30px;
-                border: 2px solid #00ffff;
-                border-radius: 8px;
-                font-size: 18px;
-                text-align: center;
-                z-index: 500;
-                animation: fadeInOut 2s ease-in-out forwards;
-            `;
-            msg.innerHTML = `${name} Upgraded!`;
-            canvas.appendChild(msg);
-            
-            setTimeout(() => {
-                if (msg.parentNode) {
-                    msg.remove();
-                }
-            }, 2000);
+            }
+            tempPowerupTimerEl.textContent = timers.join(' | ');
         }
 
         function updatePowerupDisplay() {
-            let html = '<div style="color: #ffff00; font-size: 16px; margin-bottom: 10px;">PERMANENT UPGRADES:</div>';
-            
-            Object.keys(gameState.permanentPowerups).forEach(type => {
-                const level = gameState.permanentPowerups[type];
-                const powerup = POWERUPS[type];
-                if (level > 0) {
-                    html += `<div style="color: ${powerup.color};">${powerup.name} Lv.${level}</div>`;
-                }
-            });
-            
-            activePowerupsEl.innerHTML = html;
+            activePowerupsEl.innerHTML = Object.entries(gameState.permanentPowerups).map(([type, level]) => 
+                `${POWERUPS[type].name} Lv${level}`
+            ).join('<br>');
         }
 
-        // Explosion
-        function createExplosion(x, y, size = 50) {
-            const explosion = {
-                x: x,
-                y: y,
-                element: document.createElement('div'),
-                timer: 500
-            };
-            
-            explosion.element.className = 'explosion';
-            explosion.element.style.width = size + 'px';
-            explosion.element.style.height = size + 'px';
-            explosion.element.style.left = (x - size/2) + 'px';
-            explosion.element.style.top = (y - size/2) + 'px';
-            canvas.appendChild(explosion.element);
-            gameState.explosions.push(explosion);
-        }
-
-        // Collision detection
-        function checkCollision(obj1, obj2, size1 = 24, size2 = 24) {
-            return obj1.x < obj2.x + size2 &&
-                   obj1.x + size1 > obj2.x &&
-                   obj1.y < obj2.y + size2 &&
-                   obj1.y + size1 > obj2.y;
-        }
-
-        // Player death and respawn
         function playerDeath() {
+            createExplosion(gameState.player.x + 16, gameState.player.y + 16, 60);
             gameState.player.lives--;
             livesCountEl.textContent = gameState.player.lives;
-            
             if (gameState.player.lives <= 0) {
                 endGame();
                 return;
             }
-            
-            // Respawn with brief invulnerability
             gameState.player.health = 100;
-            gameState.player.x = window.innerWidth / 2 - 16;
-            gameState.player.invulnerable = Date.now() + 3000; // 3 seconds
             healthFillEl.style.width = '100%';
-            
-            showRespawnMessage();
+            gameState.player.invulnerable = Date.now() + 3000;
+            gameState.temporaryPowerups = {};
         }
 
-        function showRespawnMessage() {
-            const msg = document.createElement('div');
-            msg.style.cssText = `
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(100, 100, 0, 0.9);
-                color: #ffff00;
-                padding: 20px 40px;
-                border: 2px solid #ffff00;
-                border-radius: 10px;
-                font-size: 20px;
-                text-align: center;
-                z-index: 500;
-                animation: fadeInOut 3s ease-in-out forwards;
-            `;
-            msg.innerHTML = `
-                <strong>RESPAWNING</strong><br>
-                <small>Temporary shield active</small>
-            `;
-            canvas.appendChild(msg);
-            
-            setTimeout(() => {
-                if (msg.parentNode) {
-                    msg.remove();
-                }
-            }, 3000);
+        function checkCollision(obj1, obj2, size1, size2) {
+            return (
+                obj1.x < obj2.x + size2 &&
+                obj1.x + size1 > obj2.x &&
+                obj1.y < obj2.y + size2 &&
+                obj1.y + size1 > obj2.y
+            );
+        }
+
+        function createExplosion(x, y, size = 50) {
+            const explosion = {
+                x: x - size / 2,
+                y: y - size / 2,
+                timer: 500,
+                element: document.createElement('div')
+            };
+            explosion.element.className = 'explosion';
+            explosion.element.style.left = explosion.x + 'px';
+            explosion.element.style.top = explosion.y + 'px';
+            explosion.element.style.width = size + 'px';
+            explosion.element.style.height = size + 'px';
+            canvas.appendChild(explosion.element);
+            gameState.explosions.push(explosion);
         }
 
         // Update game
@@ -982,8 +1493,18 @@
 
             const playerEl = document.getElementById('player');
             
+            // Update temporary powerups
+            updateTemporaryPowerups();
+            
+            // Time slow effect
+            const timeMultiplier = gameState.temporaryPowerups.TIME_SLOW ? 0.3 : 1;
+            const adjustedDelta = deltaTime * timeMultiplier;
+            
             // Player movement with speed upgrades
-            const moveSpeed = gameState.player.speed + (gameState.permanentPowerups.SPEED || 0);
+            const baseSpeed = gameState.player.speed;
+            const permanentSpeed = gameState.permanentPowerups.SPEED || 0;
+            const moveSpeed = baseSpeed + permanentSpeed;
+            
             if (gameState.keys['ArrowLeft'] || gameState.keys['KeyA']) {
                 gameState.player.x -= moveSpeed;
             }
@@ -994,9 +1515,16 @@
             gameState.player.x = Math.max(0, Math.min(window.innerWidth - 32, gameState.player.x));
             playerEl.style.left = gameState.player.x + 'px';
             
-            // Show invulnerability effect
-            if (gameState.player.invulnerable && Date.now() < gameState.player.invulnerable) {
-                playerEl.style.opacity = Math.sin(Date.now() / 100) > 0 ? '0.3' : '1';
+            // Show invulnerability or invincible effect
+            const isInvulnerable = (gameState.player.invulnerable && Date.now() < gameState.player.invulnerable);
+            const isInvincible = gameState.temporaryPowerups.INVINCIBLE;
+            
+            if (isInvulnerable || isInvincible) {
+                if (isInvincible) {
+                    playerEl.style.opacity = '1';
+                } else {
+                    playerEl.style.opacity = Math.sin(Date.now() / 100) > 0 ? '0.3' : '1';
+                }
             } else {
                 playerEl.style.opacity = '1';
                 gameState.player.invulnerable = null;
@@ -1015,12 +1543,13 @@
             }
 
             // Update boss
-            updateBoss(deltaTime);
+            updateBoss(adjustedDelta);
 
             // Enemy spawning
             if (!gameState.boss) {
-                gameState.enemySpawnTimer += deltaTime;
-                const spawnRate = Math.max(300, 1000 - (gameState.wave * 40));
+                gameState.enemySpawnTimer += adjustedDelta;
+                const baseSpawnRate = Math.max(300, 1000 - (gameState.wave * 40));
+                const spawnRate = baseSpawnRate * (gameState.temporaryPowerups.TIME_SLOW ? 3 : 1);
                 
                 if (gameState.enemySpawnTimer > spawnRate && gameState.enemiesRemaining > 0) {
                     spawnSingleEnemy();
@@ -1042,7 +1571,12 @@
                 
                 // Check boss collision
                 if (gameState.boss && checkCollision(bullet, gameState.boss, 6, 80)) {
-                    gameState.boss.health -= bullet.damage;
+                    let damage = bullet.damage;
+                    if (gameState.boss.shieldActive) {
+                        damage = Math.max(1, Math.floor(damage / 3));
+                    }
+                    
+                    gameState.boss.health -= damage;
                     updateBossHealth();
                     
                     if (gameState.boss.health <= 0) {
@@ -1061,15 +1595,24 @@
                     const enemyData = ENEMY_TYPES[enemy.type];
                     
                     if (checkCollision(bullet, enemy, 6, enemyData.size)) {
-                        enemy.health -= bullet.damage;
+                        let damage = bullet.damage;
+                        if (enemy.shielded) {
+                            damage = Math.max(1, Math.floor(damage / 2));
+                            if (Math.random() < 0.3) {
+                                enemy.shielded = false;
+                                enemy.element.style.filter = 'none';
+                            }
+                        }
+                        
+                        enemy.health -= damage;
                         
                         if (enemy.health <= 0) {
                             createExplosion(enemy.x + enemyData.size/2, enemy.y + enemyData.size/2);
                             spawnPowerup(enemy.x + enemyData.size/2, enemy.y + enemyData.size/2);
                             enemy.element.remove();
                             gameState.enemies.splice(i, 1);
-                            gameState.score += enemyData.score;
-                            scoreEl.textContent = gameState.score;
+                            gameState.score += enemyData.score * (1 + gameState.wave / 10);
+                            scoreEl.textContent = Math.floor(gameState.score);
                         }
                         
                         if (!gameState.permanentPowerups.PIERCING) {
@@ -1084,18 +1627,25 @@
 
             // Update enemy bullets
             gameState.enemyBullets = gameState.enemyBullets.filter(bullet => {
-                const speed = bullet.speed || 4;
-                bullet.y += speed;
-                bullet.element.style.top = bullet.y + 'px';
+                const speed = (bullet.speed || 4) * timeMultiplier;
                 
-                if (bullet.y > window.innerHeight + 20) {
+                if (bullet.angle !== undefined) {
+                    bullet.x += Math.cos(bullet.angle) * speed;
+                    bullet.y += Math.sin(bullet.angle) * speed;
+                } else {
+                    bullet.y += speed;
+                }
+                
+                bullet.element.style.top = bullet.y + 'px';
+                bullet.element.style.left = bullet.x + 'px';
+                
+                if (bullet.y > window.innerHeight + 20 || bullet.x < -20 || bullet.x > window.innerWidth + 20) {
                     bullet.element.remove();
                     return false;
                 }
                 
-                // Check player collision (with invulnerability)
-                const isInvulnerable = gameState.player.invulnerable && Date.now() < gameState.player.invulnerable;
-                if (checkCollision(bullet, gameState.player, 6, 32) && !isInvulnerable) {
+                // Check player collision (with invulnerability/invincible)
+                if (checkCollision(bullet, gameState.player, 6, 32) && !isInvulnerable && !isInvincible) {
                     createExplosion(gameState.player.x + 16, gameState.player.y + 16);
                     bullet.element.remove();
                     gameState.player.health -= 15;
@@ -1110,43 +1660,100 @@
                 return true;
             });
 
+            // Update laser beams
+            gameState.laserBeams = gameState.laserBeams.filter(laser => {
+                laser.timer += deltaTime;
+                
+                if (laser.timer > laser.duration) {
+                    laser.element.remove();
+                    return false;
+                }
+                
+                if (laser.isPlayer) {
+                    // Check enemy collisions
+                    for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+                        const enemy = gameState.enemies[i];
+                        const enemyData = ENEMY_TYPES[enemy.type];
+                        if (checkCollision(laser, enemy, 4, enemyData.size)) {
+                            enemy.health -= 5;
+                            if (enemy.health <= 0) {
+                                createExplosion(enemy.x + enemyData.size / 2, enemy.y + enemyData.size / 2);
+                                spawnPowerup(enemy.x + enemyData.size / 2, enemy.y + enemyData.size / 2);
+                                enemy.element.remove();
+                                gameState.enemies.splice(i, 1);
+                                gameState.score += enemyData.score * (1 + gameState.wave / 10);
+                                scoreEl.textContent = Math.floor(gameState.score);
+                            }
+                        }
+                    }
+                    // Check boss
+                    if (gameState.boss && checkCollision(laser, gameState.boss, 4, 80)) {
+                        gameState.boss.health -= 5;
+                        updateBossHealth();
+                        if (gameState.boss.health <= 0) {
+                            destroyBoss();
+                        }
+                    }
+                } else {
+                    // Check player collision with laser
+                    if (checkCollision(laser, gameState.player, 4, 32) && !isInvulnerable && !isInvincible) {
+                        if (Date.now() - (laser.lastHit || 0) > 500) { // Damage every 0.5 seconds
+                            gameState.player.health -= 20;
+                            healthFillEl.style.width = Math.max(0, gameState.player.health) + '%';
+                            laser.lastHit = Date.now();
+                            
+                            if (gameState.player.health <= 0) {
+                                playerDeath();
+                            }
+                        }
+                    }
+                }
+                
+                return true;
+            });
+
             // Update enemies
             gameState.enemies.forEach((enemy, index) => {
                 const enemyData = ENEMY_TYPES[enemy.type];
-                enemy.moveTimer += deltaTime;
-                enemy.y += enemy.speed;
+                enemy.moveTimer += adjustedDelta;
                 
-                // Special kamikaze behavior
+                // Update special enemy behaviors
+                updateEnemyBehavior(enemy, adjustedDelta);
+                
+                // Basic movement
+                enemy.y += enemy.speed * timeMultiplier;
+                
+                // Special movement patterns
                 if (enemy.type === 'KAMIKAZE' && enemy.y > window.innerHeight / 2) {
                     const dx = gameState.player.x - enemy.x;
-                    enemy.x += Math.sign(dx) * 2;
-                }
-                
-                // Enhanced movement patterns
-                const intensity = 1 + (gameState.wave - 1) * 0.3;
-                switch (enemy.movePattern) {
-                    case 0:
-                        enemy.x += (Math.random() - 0.5) * 0.5 * intensity;
-                        break;
-                    case 1:
-                        enemy.x += Math.sin(enemy.moveTimer * 0.005) * 2 * intensity;
-                        break;
-                    case 2:
-                        enemy.x += Math.sin(enemy.moveTimer * 0.002) * 1.5 * intensity;
-                        break;
-                    case 3:
-                        enemy.x += Math.sin(enemy.moveTimer * 0.008) * 3 * intensity;
-                        break;
+                    enemy.x += Math.sign(dx) * 3 * timeMultiplier;
+                } else if (enemy.type !== 'ZIGZAG') {
+                    // Enhanced movement patterns for non-zigzag enemies
+                    const intensity = 1 + (gameState.wave - 1) * 0.2;
+                    switch (enemy.movePattern) {
+                        case 0:
+                            enemy.x += (Math.random() - 0.5) * 0.5 * intensity * timeMultiplier;
+                            break;
+                        case 1:
+                            enemy.x += Math.sin(enemy.moveTimer * 0.005) * 2 * intensity * timeMultiplier;
+                            break;
+                        case 2:
+                            enemy.x += Math.sin(enemy.moveTimer * 0.002) * 1.5 * intensity * timeMultiplier;
+                            break;
+                        case 3:
+                            enemy.x += Math.sin(enemy.moveTimer * 0.008) * 3 * intensity * timeMultiplier;
+                            break;
+                    }
                 }
                 
                 enemy.x = Math.max(0, Math.min(window.innerWidth - enemyData.size, enemy.x));
                 
-                // Check collision with player (kamikaze)
-                if (enemy.type === 'KAMIKAZE' && checkCollision(enemy, gameState.player, enemyData.size, 32)) {
-                    const isInvulnerable = gameState.player.invulnerable && Date.now() < gameState.player.invulnerable;
-                    if (!isInvulnerable) {
+                // Check collision with player (kamikaze and berserker)
+                if ((enemy.type === 'KAMIKAZE' || enemy.berserkMode) && checkCollision(enemy, gameState.player, enemyData.size, 32)) {
+                    if (!isInvulnerable && !isInvincible) {
+                        const damage = enemy.type === 'KAMIKAZE' ? 25 : 20;
                         createExplosion(enemy.x + enemyData.size/2, enemy.y + enemyData.size/2, 70);
-                        gameState.player.health -= 25;
+                        gameState.player.health -= damage;
                         healthFillEl.style.width = Math.max(0, gameState.player.health) + '%';
                         
                         if (gameState.player.health <= 0) {
@@ -1157,7 +1764,7 @@
                     enemy.element.remove();
                     gameState.enemies.splice(index, 1);
                     gameState.score += enemyData.score;
-                    scoreEl.textContent = gameState.score;
+                    scoreEl.textContent = Math.floor(gameState.score);
                     return;
                 }
                 
@@ -1171,15 +1778,15 @@
                 enemy.element.style.left = enemy.x + 'px';
                 enemy.element.style.top = enemy.y + 'px';
                 
-                // Enemy shooting
-                if (Math.random() < enemyData.shootRate * deltaTime) {
+                // Enemy shooting with time slow consideration
+                if (Math.random() < enemyData.shootRate * adjustedDelta) {
                     enemyShoot(enemy);
                 }
             });
 
             // Update powerups
             gameState.powerups = gameState.powerups.filter(powerup => {
-                powerup.y += 3;
+                powerup.y += 3 * timeMultiplier;
                 powerup.element.style.top = powerup.y + 'px';
                 
                 if (powerup.y > window.innerHeight + 50) {
@@ -1224,9 +1831,16 @@
         // Wave progression
         function nextWave() {
             gameState.wave++;
-            gameState.player.health = Math.min(100, gameState.player.health + 20);
+            gameState.player.health = Math.min(100, gameState.player.health + 15);
             waveEl.textContent = gameState.wave;
             healthFillEl.style.width = gameState.player.health + '%';
+            
+            // Update high scores
+            if (gameState.wave > topWave) {
+                topWave = gameState.wave;
+                localStorage.setItem('spaceGalacticaTopWave', topWave);
+                topWaveEl.textContent = topWave;
+            }
             
             setTimeout(() => {
                 spawnEnemies();
@@ -1302,6 +1916,7 @@
             livesCountEl.textContent = gameState.player.lives;
             healthFillEl.style.width = '100%';
             bossHealthBarEl.style.display = 'none';
+            tempPowerupTimerEl.textContent = '';
             updatePowerupDisplay();
             
             createPlayer();
@@ -1315,8 +1930,31 @@
 
         function endGame() {
             gameState.playing = false;
-            finalScoreEl.textContent = gameState.score;
+            finalScoreEl.textContent = Math.floor(gameState.score);
             finalWaveEl.textContent = gameState.wave;
+            
+            // Check for new records
+            let newRecord = false;
+            if (gameState.score > highScore) {
+                highScore = Math.floor(gameState.score);
+                localStorage.setItem('spaceGalacticaHighScore', highScore);
+                highScoreEl.textContent = highScore;
+                newRecord = true;
+            }
+            
+            if (gameState.wave > topWave) {
+                topWave = gameState.wave;
+                localStorage.setItem('spaceGalacticaTopWave', topWave);
+                topWaveEl.textContent = topWave;
+                newRecord = true;
+            }
+            
+            if (newRecord) {
+                newRecordEl.style.display = 'block';
+            } else {
+                newRecordEl.style.display = 'none';
+            }
+            
             gameOverEl.style.display = 'block';
         }
 
@@ -1327,6 +1965,7 @@
             gameState.enemyBullets.forEach(bullet => bullet.element.remove());
             gameState.explosions.forEach(explosion => explosion.element.remove());
             gameState.powerups.forEach(powerup => powerup.element.remove());
+            gameState.laserBeams.forEach(laser => laser.element.remove());
             
             if (gameState.boss) {
                 gameState.boss.element.remove();
@@ -1350,7 +1989,9 @@
                 enemyBullets: [],
                 explosions: [],
                 powerups: [],
-                permanentPowerups: {}, // Reset permanent powerups on game restart
+                permanentPowerups: {},
+                temporaryPowerups: {},
+                tempPowerupTimer: {},
                 score: 0,
                 wave: 1,
                 enemiesRemaining: 0,
@@ -1359,13 +2000,15 @@
                 waveComplete: false,
                 lastShoot: 0,
                 boss: null,
-                bossSpawnTimer: 0
+                bossSpawnTimer: 0,
+                laserBeams: []
             };
             
             gameOverEl.style.display = 'none';
             instructionsEl.style.display = 'block';
             bossHealthBarEl.style.display = 'none';
             activePowerupsEl.innerHTML = '';
+            tempPowerupTimerEl.textContent = '';
         }
 
         function gameLoop(currentTime) {
