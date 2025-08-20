@@ -23,7 +23,9 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            cursor: none;
+            cursor: default;
+            border: 5px solid #00ff00;
+            box-shadow: 0 0 20px #00ff00;
         }
 
         .star {
@@ -412,6 +414,66 @@
             0% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-50px); }
         }
+
+        #pauseBtn {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: #003300;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        #pauseBtn:hover {
+            background: #00ff00;
+            color: #000;
+        }
+
+        #pauseMenu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 200;
+            display: none;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+        }
+
+        #pauseMenu h2 {
+            color: #00ffff;
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 255, 0.5);
+        }
+
+        #pauseMenu button {
+            background: #003300;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+
+        #pauseMenu button:hover {
+            background: #00ff00;
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -430,6 +492,8 @@
         <div id="powerupDisplay">
             <div id="activePowerups"></div>
         </div>
+
+        <button id="pauseBtn">Pause</button>
 
         <div class="health-bar">
             <div class="health-fill" id="healthFill"></div>
@@ -463,11 +527,18 @@
             <p id="newRecord" style="color: #ffff00; font-size: 20px; display: none;">NEW RECORD!</p>
             <button onclick="restartGame()">Retry Mission</button>
         </div>
+
+        <div id="pauseMenu">
+            <h2>PAUSED</h2>
+            <button onclick="resumeGame()">Resume</button>
+            <button onclick="restartGame()">Restart Mission</button>
+        </div>
     </div>
 
     <script>
         let gameState = {
             playing: false,
+            paused: false,
             player: { 
                 x: window.innerWidth / 2 - 16, 
                 y: window.innerHeight - 80, 
@@ -492,7 +563,8 @@
             lastShoot: 0,
             boss: null,
             bossSpawnTimer: 0,
-            laserBeams: []
+            laserBeams: [],
+            lastLaserTimes: []
         };
 
         // High scores
@@ -515,7 +587,7 @@
             SUPER_SPREAD: { name: 'Super Spread', color: '#44ff44', symbol: 'U', spreadShots: 5, permanent: false, duration: 12000 },
             TRIPLE_DAMAGE: { name: 'Triple Damage', color: '#ff44ff', symbol: 'T', damageBoost: 5, permanent: false, duration: 10000 },
             INVINCIBLE: { name: 'Invincible', color: '#ffff44', symbol: 'I', invincible: true, permanent: false, duration: 8000 },
-            LASER_STORM: { name: 'Laser Storm', color: '#44ffff', symbol: 'L', laserStorm: true, permanent: false, duration: 10000 },
+            LASER_STORM: { name: 'Laser Storm', color: '#44ffff', symbol: 'L', permanent: true },
             TIME_SLOW: { name: 'Time Slow', color: '#8844ff', symbol: 'Z', timeSlow: true, permanent: false, duration: 15000 }
         };
 
@@ -695,6 +767,8 @@
         const topWaveEl = document.getElementById('topWave');
         const tempPowerupTimerEl = document.getElementById('tempPowerupTimer');
         const newRecordEl = document.getElementById('newRecord');
+        const pauseMenuEl = document.getElementById('pauseMenu');
+        const pauseBtnEl = document.getElementById('pauseBtn');
 
         let lastTime = 0;
 
@@ -771,6 +845,11 @@
                 shipSvg += '<rect x="13" y="-2" width="6" height="4" fill="#ffffff" opacity="0.8"/>';
             }
 
+            // Laser storm indicator
+            if (gameState.permanentPowerups.LASER_STORM > 0) {
+                shipSvg += '<rect x="14" y="-4" width="4" height="4" fill="#44ffff"/>';
+            }
+
             // Temporary powerup effects
             if (gameState.temporaryPowerups.INVINCIBLE) {
                 player.style.filter = 'drop-shadow(0 0 10px #ffff44)';
@@ -804,7 +883,7 @@
             setTimeout(() => {
                 const bossType = getBossType();
                 const bossData = BOSS_TYPES[bossType];
-                const difficultyMultiplier = 1 + (gameState.wave / 10);
+                const difficultyMultiplier = gameState.wave;
                 
                 const boss = {
                     x: window.innerWidth / 2 - 40,
@@ -1217,6 +1296,14 @@
             const timeMultiplier = gameState.temporaryPowerups.TIME_SLOW ? 0.3 : 1;
             
             switch(enemy.type) {
+                case 'SNIPER':
+                    if (enemy.y < 100) {
+                        enemy.y += enemy.speed * timeMultiplier;
+                    } else {
+                        enemy.y = 100;
+                        enemy.x += Math.sin(enemy.moveTimer * 0.005) * 3 * timeMultiplier;
+                    }
+                    break;
                 case 'ZIGZAG':
                     enemy.x += Math.sin(enemy.moveTimer * 0.01) * 3 * timeMultiplier;
                     break;
@@ -1260,11 +1347,6 @@
                     }
                     break;
             }
-        }
-
-        function spawnMinion(parentEnemy) {
-            const minionType = Math.random() < 0.5 ? 'BASIC' : 'FAST';
-            spawnEnemyOfType(minionType, parentEnemy.x + (Math.random() - 0.5) * 50, parentEnemy.y + 20);
         }
 
         function enemyShoot(enemy) {
@@ -1332,10 +1414,6 @@
             for (let i = 0; i < spreadCount; i++) {
                 const offset = (i - (spreadCount - 1) / 2) * spreadAngle;
                 createPlayerBullet(gameState.player.x + 16, gameState.player.y, damage, offset);
-            }
-
-            if (gameState.temporaryPowerups.LASER_STORM) {
-                createPlayerLaser(gameState.player.x + 16);
             }
         }
 
@@ -1490,6 +1568,7 @@
         // Update game
         function updateGame(deltaTime) {
             if (!gameState.playing) return;
+            if (gameState.paused) return;
 
             const playerEl = document.getElementById('player');
             
@@ -1721,13 +1800,15 @@
                 updateEnemyBehavior(enemy, adjustedDelta);
                 
                 // Basic movement
-                enemy.y += enemy.speed * timeMultiplier;
+                if (enemy.type !== 'SNIPER') {
+                    enemy.y += enemy.speed * timeMultiplier;
+                }
                 
                 // Special movement patterns
                 if (enemy.type === 'KAMIKAZE' && enemy.y > window.innerHeight / 2) {
                     const dx = gameState.player.x - enemy.x;
                     enemy.x += Math.sign(dx) * 3 * timeMultiplier;
-                } else if (enemy.type !== 'ZIGZAG') {
+                } else if (enemy.type !== 'ZIGZAG' && enemy.type !== 'SNIPER') {
                     // Enhanced movement patterns for non-zigzag enemies
                     const intensity = 1 + (gameState.wave - 1) * 0.2;
                     switch (enemy.movePattern) {
@@ -1813,6 +1894,114 @@
                 return true;
             });
 
+            // Handle laser storm powerup
+            const laserLevel = gameState.permanentPowerups.LASER_STORM || 0;
+            if (laserLevel > 0 && (gameState.enemies.length > 0 || gameState.boss)) {
+                if (gameState.lastLaserTimes.length !== laserLevel) {
+                    const now = Date.now();
+                    gameState.lastLaserTimes = new Array(laserLevel).fill(0).map((_, i) => now - i * (4000 / laserLevel));
+                }
+                const now = Date.now();
+                const fromX = gameState.player.x + 16;
+                const fromY = gameState.player.y;
+                for (let i = 0; i < laserLevel; i++) {
+                    if (now > gameState.lastLaserTimes[i] + 4000) {
+                        // Find nearest target (enemy or boss)
+                        let nearest = null;
+                        let minDist = Infinity;
+                        let isBossTarget = false;
+
+                        // Check enemies
+                        gameState.enemies.forEach(enemy => {
+                            const enemyData = ENEMY_TYPES[enemy.type];
+                            const ex = enemy.x + enemyData.size / 2;
+                            const ey = enemy.y + enemyData.size / 2;
+                            const dist = (ex - fromX) ** 2 + (ey - fromY) ** 2;
+                            if (dist < minDist) {
+                                minDist = dist;
+                                nearest = enemy;
+                                isBossTarget = false;
+                            }
+                        });
+
+                        // Check boss if present
+                        if (gameState.boss) {
+                            const bx = gameState.boss.x + 40;
+                            const by = gameState.boss.y + 30;
+                            const dist = (bx - fromX) ** 2 + (by - fromY) ** 2;
+                            if (dist < minDist) {
+                                minDist = dist;
+                                nearest = gameState.boss;
+                                isBossTarget = true;
+                            }
+                        }
+
+                        if (nearest) {
+                            let toX, toY, enemyData;
+                            if (isBossTarget) {
+                                toX = nearest.x + 40;
+                                toY = nearest.y + 30;
+                            } else {
+                                enemyData = ENEMY_TYPES[nearest.type];
+                                toX = nearest.x + enemyData.size / 2;
+                                toY = nearest.y + enemyData.size / 2;
+                            }
+
+                            const dx = toX - fromX;
+                            const dy = toY - fromY;
+                            const length = Math.sqrt(dx * dx + dy * dy);
+                            const angle = Math.atan2(dy, dx);
+
+                            // Create beam visual
+                            const beam = document.createElement('div');
+                            beam.className = 'laser-beam';
+                            beam.style.background = 'linear-gradient(to bottom, #00ffff, #00aaff)';
+                            beam.style.boxShadow = '0 0 10px #00ffff';
+                            beam.style.left = `${fromX}px`;
+                            beam.style.top = `${fromY}px`;
+                            beam.style.height = `${length}px`;
+                            beam.style.transformOrigin = 'top left';
+                            beam.style.transform = `rotate(${angle}rad)`;
+                            canvas.appendChild(beam);
+                            setTimeout(() => beam.remove(), 200);
+
+                            // Apply damage
+                            let damage = 5 + gameState.permanentPowerups.LASER_STORM;
+                            if (isBossTarget) {
+                                if (nearest.shieldActive) {
+                                    damage = Math.max(1, Math.floor(damage / 3));
+                                }
+                                nearest.health -= damage;
+                                updateBossHealth();
+                                if (nearest.health <= 0) {
+                                    destroyBoss();
+                                }
+                            } else {
+                                if (nearest.shielded) {
+                                    damage = Math.max(1, Math.floor(damage / 2));
+                                    if (Math.random() < 0.3) {
+                                        nearest.shielded = false;
+                                        nearest.element.style.filter = 'none';
+                                    }
+                                }
+                                nearest.health -= damage;
+                                if (nearest.health <= 0) {
+                                    const index = gameState.enemies.indexOf(nearest);
+                                    createExplosion(toX, toY);
+                                    spawnPowerup(toX, toY);
+                                    nearest.element.remove();
+                                    gameState.enemies.splice(index, 1);
+                                    gameState.score += enemyData.score * (1 + gameState.wave / 10);
+                                    scoreEl.textContent = Math.floor(gameState.score);
+                                }
+                            }
+
+                            gameState.lastLaserTimes[i] = now;
+                        }
+                    }
+                }
+            }
+
             enemyCountEl.textContent = gameState.enemies.length + gameState.enemiesRemaining;
 
             // Check wave completion
@@ -1886,6 +2075,10 @@
                 e.preventDefault();
                 playerShoot();
             }
+
+            if (e.code === 'Escape' && gameState.playing) {
+                togglePause();
+            }
         });
 
         document.addEventListener('keyup', (e) => {
@@ -1897,6 +2090,25 @@
                 playerShoot();
             }
         });
+
+        pauseBtnEl.addEventListener('click', togglePause);
+
+        function togglePause() {
+            if (!gameState.playing) return;
+            gameState.paused = !gameState.paused;
+            if (gameState.paused) {
+                pauseMenuEl.style.display = 'block';
+            } else {
+                pauseMenuEl.style.display = 'none';
+                lastTime = performance.now();
+            }
+        }
+
+        function resumeGame() {
+            gameState.paused = false;
+            pauseMenuEl.style.display = 'none';
+            lastTime = performance.now();
+        }
 
         // Game functions
         function startGame() {
@@ -1977,6 +2189,7 @@
             // Reset game state but keep permanent powerups
             gameState = {
                 playing: false,
+                paused: false,
                 player: { 
                     x: window.innerWidth / 2 - 16, 
                     y: window.innerHeight - 80, 
@@ -2001,7 +2214,8 @@
                 lastShoot: 0,
                 boss: null,
                 bossSpawnTimer: 0,
-                laserBeams: []
+                laserBeams: [],
+                lastLaserTimes: []
             };
             
             gameOverEl.style.display = 'none';
@@ -2009,6 +2223,7 @@
             bossHealthBarEl.style.display = 'none';
             activePowerupsEl.innerHTML = '';
             tempPowerupTimerEl.textContent = '';
+            pauseMenuEl.style.display = 'none';
         }
 
         function gameLoop(currentTime) {
