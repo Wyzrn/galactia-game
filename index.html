@@ -16,13 +16,17 @@
             overflow: hidden;
             font-family: 'Courier New', monospace;
             color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         #gameCanvas {
             background: radial-gradient(ellipse at center, #001122 0%, #000000 100%);
             position: relative;
-            width: 100vw;
-            height: 100vh;
+            width: 1000px;
+            height: 800px;
             cursor: default;
             border: 5px solid #00ff00;
             box-shadow: 0 0 20px #00ff00;
@@ -46,6 +50,13 @@
             height: 32px;
             image-rendering: pixelated;
             transition: transform 0.3s;
+            outline: 1px solid white;
+        }
+
+        .companion {
+            width: 24px;
+            height: 24px;
+            outline: 1px solid white;
         }
 
         .enemy {
@@ -113,6 +124,10 @@
 
         .enemy-zigzag {
             background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="8" y="0" width="8" height="4" fill="%23ffff44"/><rect x="4" y="4" width="16" height="4" fill="%23ffff44"/><rect x="2" y="8" width="20" height="8" fill="%23ffff44"/><rect x="4" y="16" width="16" height="4" fill="%23ffff44"/><rect x="8" y="20" width="8" height="4" fill="%23cccc22"/><rect x="0" y="4" width="4" height="4" fill="%23ffffff"/><rect x="20" y="16" width="4" height="4" fill="%23ffffff"/></svg>');
+        }
+
+        .enemy-homing {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="10" y="0" width="4" height="4" fill="%23ff00ff"/><rect x="8" y="4" width="8" height="4" fill="%23ff00ff"/><rect x="6" y="8" width="12" height="8" fill="%23ff00ff"/><rect x="8" y="16" width="8" height="4" fill="%23ff00ff"/><rect x="10" y="20" width="4" height="4" fill="%23cc00cc"/><rect x="2" y="10" width="4" height="4" fill="%23ffffff"/><rect x="18" y="10" width="4" height="4" fill="%23ffffff"/></svg>');
         }
 
         .boss {
@@ -417,7 +432,7 @@
 
         #pauseBtn {
             position: absolute;
-            top: 60px;
+            bottom: 20px;
             right: 20px;
             background: #003300;
             color: #00ff00;
@@ -540,8 +555,8 @@
             playing: false,
             paused: false,
             player: { 
-                x: window.innerWidth / 2 - 16, 
-                y: window.innerHeight - 80, 
+                x: 0, 
+                y: 0, 
                 health: 100, 
                 speed: 6,
                 lives: 3
@@ -564,7 +579,7 @@
             boss: null,
             bossSpawnTimer: 0,
             laserBeams: [],
-            lastLaserTimes: []
+            companions: []
         };
 
         // High scores
@@ -587,8 +602,11 @@
             SUPER_SPREAD: { name: 'Super Spread', color: '#44ff44', symbol: 'U', spreadShots: 5, permanent: false, duration: 12000 },
             TRIPLE_DAMAGE: { name: 'Triple Damage', color: '#ff44ff', symbol: 'T', damageBoost: 5, permanent: false, duration: 10000 },
             INVINCIBLE: { name: 'Invincible', color: '#ffff44', symbol: 'I', invincible: true, permanent: false, duration: 8000 },
-            LASER_STORM: { name: 'Laser Storm', color: '#44ffff', symbol: 'L', permanent: true },
-            TIME_SLOW: { name: 'Time Slow', color: '#8844ff', symbol: 'Z', timeSlow: true, permanent: false, duration: 15000 }
+            TIME_SLOW: { name: 'Time Slow', color: '#8844ff', symbol: 'Z', timeSlow: true, permanent: false, duration: 15000 },
+            COMPANION: { name: 'Wingman', color: '#8800ff', symbol: 'W', permanent: true },
+            HEALTH_PACK: { name: 'Health Pack', color: '#00ff88', symbol: 'HP', instant: true, permanent: false },
+            DOUBLE_SCORE: { name: 'Double Score', color: '#ffff00', symbol: 'D', permanent: false, duration: 15000 },
+            NUKES: { name: 'Nuke', color: '#ff0000', symbol: 'N', instant: true, permanent: false }
         };
 
         // Enhanced enemy type definitions with wave requirements
@@ -719,6 +737,16 @@
                 size: 24,
                 minWave: 6,
                 zigzag: true
+            },
+            HOMING: {
+                className: 'enemy-homing',
+                health: 2,
+                speed: 2,
+                shootRate: 0.0008,
+                score: 250,
+                size: 24,
+                minWave: 3,
+                homing: true
             }
         };
 
@@ -733,7 +761,7 @@
             FORTRESS: {
                 color: '#8800ff',
                 health: 35,
-                abilities: ['laserBeam', 'shield'],
+                abilities: ['shield', 'spawnMinions'],
                 movePattern: 'stationary'
             },
             MOTHERSHIP: {
@@ -746,6 +774,48 @@
                 color: '#ff4400',
                 health: 70,
                 abilities: ['megaLaser', 'bulletHell', 'ram'],
+                movePattern: 'aggressive'
+            },
+            BOMBER: {
+                color: '#ff8800',
+                health: 30,
+                abilities: ['dropBombs', 'multiShot'],
+                movePattern: 'horizontal'
+            },
+            BURSTER: {
+                color: '#ffff00',
+                health: 25,
+                abilities: ['burstShot', 'spawnMinions'],
+                movePattern: 'circular'
+            },
+            LOCKER: {
+                color: '#00ffff',
+                health: 40,
+                abilities: ['lockOnShot', 'teleport'],
+                movePattern: 'aggressive'
+            },
+            TANK: {
+                color: '#aa00aa',
+                health: 100,
+                abilities: ['shield', 'rapidFire'],
+                movePattern: 'stationary'
+            },
+            SWARMER: {
+                color: '#00ff88',
+                health: 50,
+                abilities: ['spawnMinions', 'bulletHell'],
+                movePattern: 'horizontal'
+            },
+            BEAMER: {
+                color: '#ff4444',
+                health: 35,
+                abilities: ['megaLaser', 'laserBeam'],
+                movePattern: 'stationary'
+            },
+            DIVER: {
+                color: '#ff0088',
+                health: 45,
+                abilities: ['ram', 'burstShot'],
                 movePattern: 'aggressive'
             }
         };
@@ -778,11 +848,13 @@
 
         // Create starfield
         function createStars() {
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
             for (let i = 0; i < 150; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.top = Math.random() * 100 + 'vh';
+                star.style.left = Math.random() * width + 'px';
+                star.style.top = Math.random() * height + 'px';
                 star.style.width = Math.random() * 3 + 1 + 'px';
                 star.style.height = star.style.width;
                 star.style.animationDelay = Math.random() * 2 + 's';
@@ -845,10 +917,8 @@
                 shipSvg += '<rect x="13" y="-2" width="6" height="4" fill="#ffffff" opacity="0.8"/>';
             }
 
-            // Laser storm indicator
-            if (gameState.permanentPowerups.LASER_STORM > 0) {
-                shipSvg += '<rect x="14" y="-4" width="4" height="4" fill="#44ffff"/>';
-            }
+            shipSvg += '</svg>';
+            player.style.backgroundImage = `url('data:image/svg+xml,${encodeURIComponent(shipSvg)}')`;
 
             // Temporary powerup effects
             if (gameState.temporaryPowerups.INVINCIBLE) {
@@ -861,8 +931,9 @@
                 player.style.filter = 'none';
             }
 
-            shipSvg += '</svg>';
-            player.style.backgroundImage = `url('data:image/svg+xml,${encodeURIComponent(shipSvg)}')`;
+            // Remove border if has powerup
+            const hasPowerup = Object.keys(gameState.permanentPowerups).length > 0;
+            player.style.outline = hasPowerup ? 'none' : '1px solid white';
         }
 
         // Boss functions
@@ -877,22 +948,24 @@
         }
 
         function spawnBoss() {
+            const width = canvas.clientWidth;
             console.log("Spawning boss for wave", gameState.wave);
             showBossWarning();
             
             setTimeout(() => {
                 const bossType = getBossType();
                 const bossData = BOSS_TYPES[bossType];
-                const difficultyMultiplier = gameState.wave;
+                const difficultyMultiplier = getDifficultyMultiplier();
+                const healthMultiplier = getHealthMultiplier();
                 
                 const boss = {
-                    x: window.innerWidth / 2 - 40,
+                    x: width / 2 - 40,
                     y: -60,
                     targetY: bossData.movePattern === 'stationary' ? 50 : 100,
                     element: document.createElement('div'),
                     type: bossType,
-                    health: Math.floor(bossData.health * difficultyMultiplier),
-                    maxHealth: Math.floor(bossData.health * difficultyMultiplier),
+                    health: Math.round(bossData.health * difficultyMultiplier * healthMultiplier),
+                    maxHealth: Math.round(bossData.health * difficultyMultiplier * healthMultiplier),
                     lastShot: Date.now(),
                     lastSpawn: Date.now(),
                     lastAbility: Date.now(),
@@ -950,6 +1023,7 @@
             if (!gameState.boss) return;
             
             const boss = gameState.boss;
+            const width = canvas.clientWidth;
             boss.moveTimer += deltaTime;
             const timeMultiplier = gameState.temporaryPowerups.TIME_SLOW ? 0.3 : 1;
             
@@ -982,7 +1056,7 @@
                         break;
                 }
                 
-                boss.x = Math.max(40, Math.min(window.innerWidth - 120, boss.x));
+                boss.x = Math.max(40, Math.min(width - 120, boss.x));
                 boss.y = Math.max(30, Math.min(200, boss.y));
                 
                 // Boss abilities
@@ -1004,6 +1078,17 @@
             
             boss.element.style.left = boss.x + 'px';
             boss.element.style.top = boss.y + 'px';
+
+            // Check collision with player
+            if (checkCollision(boss, gameState.player, 80, 32) && !gameState.temporaryPowerups.INVINCIBLE && !gameState.player.invulnerable) {
+                const damageMultiplier = getDifficultyMultiplier();
+                const damage = Math.round(50 * damageMultiplier);
+                gameState.player.health -= damage;
+                healthFillEl.style.width = Math.max(0, gameState.player.health) + '%';
+                if (gameState.player.health <= 0) {
+                    playerDeath();
+                }
+            }
         }
 
         function executeBossAbility(boss, ability) {
@@ -1016,13 +1101,13 @@
                     
                 case 'spawnMinions':
                     for (let i = 0; i < 2; i++) {
-                        const side = i === 0 ? -30 : window.innerWidth + 30;
+                        const side = i === 0 ? -30 : canvas.clientWidth + 30;
                         spawnBossMinion(side, boss.y + 30);
                     }
                     break;
                     
                 case 'laserBeam':
-                    createLaserBeam(boss.x + 40, boss.y + 60);
+                    createBossLaserBeam(boss.x + 40, boss.y + 60);
                     break;
                     
                 case 'shield':
@@ -1032,7 +1117,7 @@
                     break;
                     
                 case 'teleport':
-                    boss.x = Math.random() * (window.innerWidth - 120) + 40;
+                    boss.x = Math.random() * (canvas.clientWidth - 120) + 40;
                     createExplosion(boss.x + 40, boss.y + 30, 30);
                     break;
                     
@@ -1047,7 +1132,7 @@
                     break;
                     
                 case 'megaLaser':
-                    createMegaLaser(boss.x + 40, boss.y + 60);
+                    createBossMegaLaser(boss.x + 40, boss.y + 60);
                     break;
                     
                 case 'bulletHell':
@@ -1079,30 +1164,69 @@
                         }
                     }, 50);
                     break;
+                case 'dropBombs':
+                    for (let i = 0; i < 5; i++) {
+                        const bombX = boss.x + Math.random() * 80;
+                        const bombY = boss.y + 60;
+                        createEnemyBullet(bombX, bombY, Math.PI / 2, 2, 'boss-bullet');
+                    }
+                    break;
+                case 'burstShot':
+                    for (let i = -3; i <= 3; i++) {
+                        const angle = (Math.PI / 2) + (i * 0.15);
+                        shootDirectionalBossBullet(boss.x + 40, boss.y + 60, angle);
+                    }
+                    break;
+                case 'lockOnShot':
+                    const dx = gameState.player.x + 16 - (boss.x + 40);
+                    const dy = gameState.player.y + 16 - (boss.y + 30);
+                    const angle = Math.atan2(dy, dx);
+                    shootDirectionalBossBullet(boss.x + 40, boss.y + 60, angle);
+                    break;
             }
         }
 
-        function createLaserBeam(x, y) {
+        function createBossLaserBeam(fromX, fromY) {
+            let nearest = gameState.player;
+            if (!nearest) return;
+
+            const toX = nearest.x + 16;
+            const toY = nearest.y + 16;
+
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            if (length === 0) return;
+            const angle = Math.atan2(dy, dx);
+
+            const beam = document.createElement('div');
+            beam.className = 'laser-beam';
+            beam.style.background = 'linear-gradient(to bottom, #ff0000, #ffaa00)';
+            beam.style.boxShadow = '0 0 10px #ff0000';
+            beam.style.left = `${fromX}px`;
+            beam.style.top = `${fromY}px`;
+            beam.style.height = `${length}px`;
+            beam.style.transformOrigin = 'top left';
+            beam.style.transform = `rotate(${angle}rad)`;
+            canvas.appendChild(beam);
+            setTimeout(() => beam.remove(), 200);
+
+            // Apply damage if hits player
             const laser = {
-                x: x - 2,
-                y: y,
-                element: document.createElement('div'),
-                duration: 3000,
+                x: fromX,
+                y: fromY,
+                angle,
+                length,
+                duration: 200,
                 timer: 0,
                 isPlayer: false
             };
-            
-            laser.element.className = 'laser-beam';
-            laser.element.style.left = laser.x + 'px';
-            laser.element.style.top = laser.y + 'px';
-            laser.element.style.height = (window.innerHeight - y) + 'px';
-            canvas.appendChild(laser.element);
             gameState.laserBeams.push(laser);
         }
 
-        function createMegaLaser(x, y) {
+        function createBossMegaLaser(x, y) {
             for (let i = -1; i <= 1; i++) {
-                createLaserBeam(x + i * 20, y);
+                createBossLaserBeam(x + i * 20, y);
             }
         }
 
@@ -1167,7 +1291,7 @@
             const powerupCount = 3 + Math.floor(Math.random() * 2);
             for (let i = 0; i < powerupCount; i++) {
                 setTimeout(() => {
-                    spawnPowerup(window.innerWidth / 2 + (i - Math.floor(powerupCount/2)) * 60, 200);
+                    spawnPowerup(canvas.clientWidth / 2 + (i - Math.floor(powerupCount/2)) * 60, 200);
                 }, i * 300);
             }
             
@@ -1220,44 +1344,59 @@
             
             console.log("Starting enemy spawn for wave", gameState.wave);
             const baseEnemies = Math.min(4 + Math.floor(gameState.wave / 2), 20); // Cap at 20 enemies
-            gameState.enemiesRemaining = baseEnemies;
+            const cols = 5 + Math.floor(gameState.wave / 5);
+            const rows = Math.ceil(baseEnemies / cols);
+            gameState.enemiesRemaining = 0; // All spawned at once
             gameState.enemySpawnTimer = 0;
             gameState.waveComplete = false;
-            enemyCountEl.textContent = baseEnemies;
+            enemyCountEl.textContent = rows * cols;
             
-            spawnSingleEnemy();
-        }
+            const width = canvas.clientWidth;
+            const gridWidth = (cols - 1) * 40;
+            const startX = (width - gridWidth) / 2;
+            const startY = 50;
 
-        function spawnSingleEnemy() {
-            if (gameState.enemiesRemaining <= 0) return;
-            
-            // Get available enemy types for current wave
-            const availableTypes = Object.keys(ENEMY_TYPES).filter(type => 
-                ENEMY_TYPES[type].minWave <= gameState.wave
-            );
-            
-            // Weight selection based on wave progression
-            let enemyType = 'BASIC';
-            const rand = Math.random();
-            
-            if (gameState.wave >= 12) {
-                if (rand < 0.05) enemyType = availableTypes[availableTypes.length - 1]; // Latest enemy
-                else if (rand < 0.15) enemyType = availableTypes[Math.floor(availableTypes.length * 0.8)];
-                else if (rand < 0.35) enemyType = availableTypes[Math.floor(availableTypes.length * 0.6)];
-                else enemyType = availableTypes[Math.floor(Math.random() * Math.min(availableTypes.length, 6))];
-            } else {
-                // Progressive introduction
-                const maxIndex = Math.min(availableTypes.length - 1, Math.floor(gameState.wave / 2));
-                enemyType = availableTypes[Math.floor(Math.random() * (maxIndex + 1))];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    // Get available enemy types for current wave
+                    const availableTypes = Object.keys(ENEMY_TYPES).filter(type => 
+                        ENEMY_TYPES[type].minWave <= gameState.wave
+                    );
+                    
+                    // Weight selection based on wave progression
+                    let enemyType = 'BASIC';
+                    const rand = Math.random();
+                    
+                    if (gameState.wave >= 12) {
+                        if (rand < 0.05) enemyType = availableTypes[availableTypes.length - 1]; // Latest enemy
+                        else if (rand < 0.15) enemyType = availableTypes[Math.floor(availableTypes.length * 0.8)];
+                        else if (rand < 0.35) enemyType = availableTypes[Math.floor(availableTypes.length * 0.6)];
+                        else enemyType = availableTypes[Math.floor(Math.random() * Math.min(availableTypes.length, 6))];
+                    } else {
+                        // Progressive introduction
+                        const maxIndex = Math.min(availableTypes.length - 1, Math.floor(gameState.wave / 2));
+                        enemyType = availableTypes[Math.floor(Math.random() * (maxIndex + 1))];
+                    }
+                    
+                    const initialX = (c % 2 === 0 ? -50 : width + 50);
+                    const initialY = -50 - r * 50;
+                    spawnEnemyOfType(enemyType, initialX, initialY, startX + c * 40, startY + r * 40);
+                }
             }
-            
-            spawnEnemyOfType(enemyType, Math.random() * (window.innerWidth - 50) + 25, -40);
-            gameState.enemiesRemaining--;
         }
 
-        function spawnEnemyOfType(type, x, y) {
+        function getDifficultyMultiplier() {
+            return 1 + 0.03 * (gameState.wave - 1);
+        }
+
+        function getHealthMultiplier() {
+            return 1 + 0.5 * Math.floor((gameState.wave - 1) / 5);
+        }
+
+        function spawnEnemyOfType(type, x, y, targetX = null, targetY = null) {
             const enemyData = ENEMY_TYPES[type];
-            const difficultyMultiplier = 1 + (gameState.wave - 1) * 0.1;
+            const difficultyMultiplier = getDifficultyMultiplier();
+            const healthMultiplier = getHealthMultiplier();
             
             const enemy = {
                 type: type,
@@ -1268,14 +1407,20 @@
                 lastAction: Date.now(),
                 movePattern: Math.floor(Math.random() * 4),
                 moveTimer: 0,
-                health: Math.floor(enemyData.health * difficultyMultiplier),
+                health: Math.round(enemyData.health * difficultyMultiplier * healthMultiplier),
                 speed: enemyData.speed * (0.8 + Math.random() * 0.4),
-                maxHealth: Math.floor(enemyData.health * difficultyMultiplier),
+                maxHealth: Math.round(enemyData.health * difficultyMultiplier * healthMultiplier),
                 shielded: enemyData.shield && Math.random() < 0.3,
                 stealthTimer: enemyData.stealth ? Math.random() * 3000 : 0,
                 teleportTimer: enemyData.teleporter ? 5000 + Math.random() * 3000 : 0,
                 berserkMode: false,
-                spawnedMinions: 0
+                spawnedMinions: 0,
+                state: targetX !== null ? 'entering' : 'normal',
+                targetX: targetX,
+                targetY: targetY,
+                willDive: Math.random() < 0.5,
+                lastDive: Date.now() + Math.random() * 5000 + 3000,
+                diveAngle: Math.random() * Math.PI - Math.PI / 2
             };
             
             enemy.element.className = `enemy ${enemyData.className}`;
@@ -1310,7 +1455,7 @@
                 case 'TELEPORTER':
                     enemy.teleportTimer -= adjustedDelta;
                     if (enemy.teleportTimer <= 0) {
-                        enemy.x = Math.random() * (window.innerWidth - enemyData.size);
+                        enemy.x = Math.random() * (canvas.clientWidth - enemyData.size);
                         createExplosion(enemy.x + enemyData.size / 2, enemy.y + enemyData.size / 2, 20);
                         enemy.teleportTimer = 5000 + Math.random() * 5000;
                     }
@@ -1346,7 +1491,21 @@
                         enemy.lastAction = Date.now();
                     }
                     break;
+                case 'HOMING':
+                    const dx = gameState.player.x + 16 - (enemy.x + enemyData.size / 2);
+                    const dy = gameState.player.y + 16 - (enemy.y + enemyData.size / 2);
+                    const angle = Math.atan2(dy, dx);
+                    enemy.x += Math.cos(angle) * enemy.speed * timeMultiplier;
+                    enemy.y += Math.sin(angle) * enemy.speed * timeMultiplier;
+                    break;
             }
+        }
+
+        function spawnMinion(enemy) {
+            const minionType = 'BASIC';
+            const minionX = enemy.x + Math.random() * 20 - 10;
+            const minionY = enemy.y + 20;
+            spawnEnemyOfType(minionType, minionX, minionY);
         }
 
         function enemyShoot(enemy) {
@@ -1388,7 +1547,7 @@
             gameState.enemyBullets.push(bullet);
         }
 
-        function playerShoot() {
+        function shootForEntity(entity, offsetX) {
             const now = Date.now();
             let fireInterval = 300;
             if (gameState.permanentPowerups.RAPID) {
@@ -1397,8 +1556,9 @@
             if (gameState.temporaryPowerups.MEGA_RAPID) {
                 fireInterval = 50;
             }
-            if (now - gameState.lastShoot < fireInterval) return;
-            gameState.lastShoot = now;
+
+            if (now - entity.lastShoot < fireInterval) return;
+            entity.lastShoot = now;
 
             let damage = 1 + (gameState.permanentPowerups.POWER || 0);
             if (gameState.temporaryPowerups.TRIPLE_DAMAGE) {
@@ -1413,7 +1573,7 @@
             const spreadAngle = 0.1;
             for (let i = 0; i < spreadCount; i++) {
                 const offset = (i - (spreadCount - 1) / 2) * spreadAngle;
-                createPlayerBullet(gameState.player.x + 16, gameState.player.y, damage, offset);
+                createPlayerBullet(entity.x + offsetX, entity.y, damage, offset);
             }
         }
 
@@ -1431,6 +1591,25 @@
             bullet.element.style.top = y + 'px';
             canvas.appendChild(bullet.element);
             gameState.bullets.push(bullet);
+        }
+
+        function createLaserBeam(x, y) {
+            const height = canvas.clientHeight;
+            const laser = {
+                x: x - 2,
+                y: y,
+                element: document.createElement('div'),
+                duration: 3000,
+                timer: 0,
+                isPlayer: false
+            };
+            
+            laser.element.className = 'laser-beam';
+            laser.element.style.left = laser.x + 'px';
+            laser.element.style.top = laser.y + 'px';
+            laser.element.style.height = (height - y) + 'px';
+            canvas.appendChild(laser.element);
+            gameState.laserBeams.push(laser);
         }
 
         function createPlayerLaser(x) {
@@ -1481,7 +1660,24 @@
         function activatePowerup(type) {
             const data = POWERUPS[type];
             if (data.instant) {
-                if (type === 'LIFE') gameState.player.lives++;
+                if (type === 'LIFE') {
+                    gameState.player.lives++;
+                } else if (type === 'HEALTH_PACK') {
+                    gameState.player.health = Math.min(100, gameState.player.health + 50);
+                    healthFillEl.style.width = gameState.player.health + '%';
+                } else if (type === 'NUKES') {
+                    // Damage all enemies and boss heavily
+                    gameState.enemies.forEach(enemy => {
+                        enemy.health -= 999;
+                    });
+                    if (gameState.boss) {
+                        gameState.boss.health -= gameState.boss.maxHealth / 2;
+                        updateBossHealth();
+                        if (gameState.boss.health <= 0) {
+                            destroyBoss();
+                        }
+                    }
+                }
                 livesCountEl.textContent = gameState.player.lives;
                 return;
             }
@@ -1489,6 +1685,12 @@
                 gameState.permanentPowerups[type] = (gameState.permanentPowerups[type] || 0) + 1;
                 updatePowerupDisplay();
                 updatePlayerVisuals();
+                gameState.companions.forEach(comp => {
+                    comp.element.style.outline = 'none';
+                });
+                if (type === 'COMPANION') {
+                    createCompanion();
+                }
             } else {
                 gameState.temporaryPowerups[type] = Date.now() + data.duration;
                 updatePlayerVisuals();
@@ -1503,6 +1705,33 @@
             msg.style.animation = 'fadeUp 2s ease-out forwards';
             canvas.appendChild(msg);
             setTimeout(() => msg.remove(), 2000);
+        }
+
+        function createCompanion() {
+            const comp = {
+                x: gameState.player.x - 40,
+                y: gameState.player.y,
+                health: 1,
+                lastShoot: Date.now(),
+                element: document.createElement('div')
+            };
+            comp.element.className = 'player companion';
+            let compSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">';
+            compSvg += '<rect x="10" y="0" width="4" height="6" fill="#8800ff"/>';
+            compSvg += '<rect x="8" y="6" width="8" height="3" fill="#8800ff"/>';
+            compSvg += '<rect x="6" y="9" width="12" height="3" fill="#8800ff"/>';
+            compSvg += '<rect x="4" y="12" width="16" height="3" fill="#8800ff"/>';
+            compSvg += '<rect x="3" y="15" width="18" height="3" fill="#8800ff"/>';
+            compSvg += '<rect x="9" y="18" width="6" height="3" fill="#6600cc"/>';
+            compSvg += '<rect x="8" y="21" width="8" height="3" fill="#6600cc"/>';
+            compSvg += '</svg>';
+            comp.element.style.backgroundImage = `url('data:image/svg+xml,${encodeURIComponent(compSvg)}')`;
+            comp.element.style.left = comp.x + 'px';
+            comp.element.style.top = comp.y + 'px';
+            const hasPowerup = Object.keys(gameState.permanentPowerups).length > 0;
+            comp.element.style.outline = hasPowerup ? 'none' : '1px solid white';
+            canvas.appendChild(comp.element);
+            gameState.companions.push(comp);
         }
 
         function updateTemporaryPowerups() {
@@ -1538,6 +1767,8 @@
             healthFillEl.style.width = '100%';
             gameState.player.invulnerable = Date.now() + 3000;
             gameState.temporaryPowerups = {};
+            gameState.companions.forEach(comp => comp.element.remove());
+            gameState.companions = [];
         }
 
         function checkCollision(obj1, obj2, size1, size2) {
@@ -1567,6 +1798,8 @@
 
         // Update game
         function updateGame(deltaTime) {
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
             if (!gameState.playing) return;
             if (gameState.paused) return;
 
@@ -1591,7 +1824,7 @@
                 gameState.player.x += moveSpeed;
             }
             
-            gameState.player.x = Math.max(0, Math.min(window.innerWidth - 32, gameState.player.x));
+            gameState.player.x = Math.max(0, Math.min(width - 32, gameState.player.x));
             playerEl.style.left = gameState.player.x + 'px';
             
             // Show invulnerability or invincible effect
@@ -1610,9 +1843,26 @@
             }
 
             // Auto-shoot if holding space
-            if (gameState.keys['Space']) {
-                playerShoot();
+            const now = Date.now();
+            let fireInterval = 300;
+            if (gameState.permanentPowerups.RAPID) {
+                fireInterval -= gameState.permanentPowerups.RAPID * 50;
             }
+            if (gameState.temporaryPowerups.MEGA_RAPID) {
+                fireInterval = 50;
+            }
+            if (gameState.keys['Space'] && now - gameState.lastShoot >= fireInterval) {
+                gameState.lastShoot = now;
+                shootForEntity(gameState.player, 16);
+            }
+
+            // Companions shoot independently
+            gameState.companions.forEach(comp => {
+                if (now - comp.lastShoot >= fireInterval) {
+                    comp.lastShoot = now;
+                    shootForEntity(comp, 12);
+                }
+            });
 
             // Health regeneration from shield powerup
             const shieldRegen = gameState.permanentPowerups.SHIELD || 0;
@@ -1624,17 +1874,7 @@
             // Update boss
             updateBoss(adjustedDelta);
 
-            // Enemy spawning
-            if (!gameState.boss) {
-                gameState.enemySpawnTimer += adjustedDelta;
-                const baseSpawnRate = Math.max(300, 1000 - (gameState.wave * 40));
-                const spawnRate = baseSpawnRate * (gameState.temporaryPowerups.TIME_SLOW ? 3 : 1);
-                
-                if (gameState.enemySpawnTimer > spawnRate && gameState.enemiesRemaining > 0) {
-                    spawnSingleEnemy();
-                    gameState.enemySpawnTimer = 0;
-                }
-            }
+            // No spawn timer since formation spawn
 
             // Update bullets
             gameState.bullets = gameState.bullets.filter(bullet => {
@@ -1643,7 +1883,7 @@
                 bullet.element.style.top = bullet.y + 'px';
                 bullet.element.style.left = bullet.x + 'px';
                 
-                if (bullet.y < -20 || bullet.x < -20 || bullet.x > window.innerWidth + 20) {
+                if (bullet.y < -20 || bullet.x < -20 || bullet.x > width + 20) {
                     bullet.element.remove();
                     return false;
                 }
@@ -1690,7 +1930,11 @@
                             spawnPowerup(enemy.x + enemyData.size/2, enemy.y + enemyData.size/2);
                             enemy.element.remove();
                             gameState.enemies.splice(i, 1);
-                            gameState.score += enemyData.score * (1 + gameState.wave / 10);
+                            let scoreGain = enemyData.score * (1 + gameState.wave / 10);
+                            if (gameState.temporaryPowerups.DOUBLE_SCORE) {
+                                scoreGain *= 2;
+                            }
+                            gameState.score += scoreGain;
                             scoreEl.textContent = Math.floor(gameState.score);
                         }
                         
@@ -1718,7 +1962,7 @@
                 bullet.element.style.top = bullet.y + 'px';
                 bullet.element.style.left = bullet.x + 'px';
                 
-                if (bullet.y > window.innerHeight + 20 || bullet.x < -20 || bullet.x > window.innerWidth + 20) {
+                if (bullet.y > height + 20 || bullet.x < -20 || bullet.x > width + 20) {
                     bullet.element.remove();
                     return false;
                 }
@@ -1727,13 +1971,32 @@
                 if (checkCollision(bullet, gameState.player, 6, 32) && !isInvulnerable && !isInvincible) {
                     createExplosion(gameState.player.x + 16, gameState.player.y + 16);
                     bullet.element.remove();
-                    gameState.player.health -= 15;
+                    const damageMultiplier = getDifficultyMultiplier();
+                    const damage = Math.round(15 * damageMultiplier);
+                    gameState.player.health -= damage;
                     healthFillEl.style.width = Math.max(0, gameState.player.health) + '%';
                     
                     if (gameState.player.health <= 0) {
                         playerDeath();
                     }
                     return false;
+                }
+
+                // Check companion collisions
+                for (let i = gameState.companions.length - 1; i >= 0; i--) {
+                    const comp = gameState.companions[i];
+                    if (checkCollision(bullet, comp, 6, 24)) {
+                        const damageMultiplier = getDifficultyMultiplier();
+                        const damage = Math.round(15 * damageMultiplier);
+                        comp.health -= damage;
+                        bullet.element.remove();
+                        if (comp.health <= 0) {
+                            createExplosion(comp.x + 12, comp.y + 12, 40);
+                            comp.element.remove();
+                            gameState.companions.splice(i, 1);
+                        }
+                        return false;
+                    }
                 }
                 
                 return true;
@@ -1760,7 +2023,11 @@
                                 spawnPowerup(enemy.x + enemyData.size / 2, enemy.y + enemyData.size / 2);
                                 enemy.element.remove();
                                 gameState.enemies.splice(i, 1);
-                                gameState.score += enemyData.score * (1 + gameState.wave / 10);
+                                let scoreGain = enemyData.score * (1 + gameState.wave / 10);
+                                if (gameState.temporaryPowerups.DOUBLE_SCORE) {
+                                    scoreGain *= 2;
+                                }
+                                gameState.score += scoreGain;
                                 scoreEl.textContent = Math.floor(gameState.score);
                             }
                         }
@@ -1777,12 +2044,32 @@
                     // Check player collision with laser
                     if (checkCollision(laser, gameState.player, 4, 32) && !isInvulnerable && !isInvincible) {
                         if (Date.now() - (laser.lastHit || 0) > 500) { // Damage every 0.5 seconds
-                            gameState.player.health -= 20;
+                            const damageMultiplier = getDifficultyMultiplier();
+                            const damage = Math.round(20 * damageMultiplier);
+                            gameState.player.health -= damage;
                             healthFillEl.style.width = Math.max(0, gameState.player.health) + '%';
                             laser.lastHit = Date.now();
                             
                             if (gameState.player.health <= 0) {
                                 playerDeath();
+                            }
+                        }
+                    }
+
+                    // Check companion collision with laser
+                    for (let i = gameState.companions.length - 1; i >= 0; i--) {
+                        const comp = gameState.companions[i];
+                        if (checkCollision(laser, comp, 4, 24)) {
+                            if (Date.now() - (laser.lastCompHit || 0) > 500) {
+                                const damageMultiplier = getDifficultyMultiplier();
+                                const damage = Math.round(20 * damageMultiplier);
+                                comp.health -= damage;
+                                laser.lastCompHit = Date.now();
+                                if (comp.health <= 0) {
+                                    createExplosion(comp.x + 12, comp.y + 12, 40);
+                                    comp.element.remove();
+                                    gameState.companions.splice(i, 1);
+                                }
                             }
                         }
                     }
@@ -1792,7 +2079,7 @@
             });
 
             // Update enemies
-            gameState.enemies.forEach((enemy, index) => {
+            gameState.enemies = gameState.enemies.filter((enemy, index) => {
                 const enemyData = ENEMY_TYPES[enemy.type];
                 enemy.moveTimer += adjustedDelta;
                 
@@ -1801,14 +2088,37 @@
                 
                 // Basic movement
                 if (enemy.type !== 'SNIPER') {
-                    enemy.y += enemy.speed * timeMultiplier;
+                    if (enemy.state === 'entering') {
+                        const dx = enemy.targetX - enemy.x;
+                        const dy = enemy.targetY - enemy.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 5) {
+                            enemy.state = 'formed';
+                        } else {
+                            const moveSpeed = enemy.speed * 2 * timeMultiplier; // Faster entry
+                            enemy.x += (dx / dist) * moveSpeed;
+                            enemy.y += (dy / dist) * moveSpeed;
+                        }
+                    } else if (enemy.state === 'formed') {
+                        enemy.x = enemy.targetX + Math.sin(enemy.moveTimer * 0.002) * 10;
+                        enemy.y = enemy.targetY;
+                        if (enemy.willDive && Date.now() > enemy.lastDive) {
+                            enemy.state = 'diving';
+                        }
+                    } else if (enemy.state === 'diving') {
+                        enemy.y += enemy.speed * 1.5 * timeMultiplier;
+                        enemy.x += Math.sin(enemy.moveTimer * 0.01) * 5 * timeMultiplier; // Curve during dive
+                        enemy.shootRate *= 2; // Shoot more during dive
+                    } else {
+                        enemy.y += enemy.speed * timeMultiplier;
+                    }
                 }
                 
                 // Special movement patterns
-                if (enemy.type === 'KAMIKAZE' && enemy.y > window.innerHeight / 2) {
+                if (enemy.type === 'KAMIKAZE' && enemy.y > height / 2) {
                     const dx = gameState.player.x - enemy.x;
                     enemy.x += Math.sign(dx) * 3 * timeMultiplier;
-                } else if (enemy.type !== 'ZIGZAG' && enemy.type !== 'SNIPER') {
+                } else if (enemy.type !== 'ZIGZAG' && enemy.type !== 'SNIPER' && enemy.state !== 'entering' && enemy.state !== 'diving') {
                     // Enhanced movement patterns for non-zigzag enemies
                     const intensity = 1 + (gameState.wave - 1) * 0.2;
                     switch (enemy.movePattern) {
@@ -1827,12 +2137,13 @@
                     }
                 }
                 
-                enemy.x = Math.max(0, Math.min(window.innerWidth - enemyData.size, enemy.x));
+                enemy.x = Math.max(0, Math.min(width - enemyData.size, enemy.x));
                 
                 // Check collision with player (kamikaze and berserker)
                 if ((enemy.type === 'KAMIKAZE' || enemy.berserkMode) && checkCollision(enemy, gameState.player, enemyData.size, 32)) {
                     if (!isInvulnerable && !isInvincible) {
-                        const damage = enemy.type === 'KAMIKAZE' ? 25 : 20;
+                        const damageMultiplier = getDifficultyMultiplier();
+                        const damage = Math.round((enemy.type === 'KAMIKAZE' ? 25 : 20) * damageMultiplier);
                         createExplosion(enemy.x + enemyData.size/2, enemy.y + enemyData.size/2, 70);
                         gameState.player.health -= damage;
                         healthFillEl.style.width = Math.max(0, gameState.player.health) + '%';
@@ -1843,17 +2154,19 @@
                     }
                     
                     enemy.element.remove();
-                    gameState.enemies.splice(index, 1);
-                    gameState.score += enemyData.score;
+                    let scoreGain = enemyData.score;
+                    if (gameState.temporaryPowerups.DOUBLE_SCORE) {
+                        scoreGain *= 2;
+                    }
+                    gameState.score += scoreGain;
                     scoreEl.textContent = Math.floor(gameState.score);
-                    return;
+                    return false;
                 }
                 
                 // Remove enemies that go off screen
-                if (enemy.y > window.innerHeight + 50) {
+                if (enemy.y > height + 50) {
                     enemy.element.remove();
-                    gameState.enemies.splice(index, 1);
-                    return;
+                    return false;
                 }
                 
                 enemy.element.style.left = enemy.x + 'px';
@@ -1863,6 +2176,20 @@
                 if (Math.random() < enemyData.shootRate * adjustedDelta) {
                     enemyShoot(enemy);
                 }
+
+                return true;
+            });
+
+            // Update companions
+            gameState.companions.forEach((comp, index) => {
+                let side = index % 2 === 0 ? -1 : 1;
+                let offset = 40 + 40 * Math.floor(index / 2);
+                const targetX = gameState.player.x + side * offset;
+                const targetY = gameState.player.y;
+                comp.x += (targetX - comp.x) * 0.1;
+                comp.y += (targetY - comp.y) * 0.1;
+                comp.element.style.left = comp.x + 'px';
+                comp.element.style.top = comp.y + 'px';
             });
 
             // Update powerups
@@ -1870,7 +2197,7 @@
                 powerup.y += 3 * timeMultiplier;
                 powerup.element.style.top = powerup.y + 'px';
                 
-                if (powerup.y > window.innerHeight + 50) {
+                if (powerup.y > height + 50) {
                     powerup.element.remove();
                     return false;
                 }
@@ -1894,119 +2221,10 @@
                 return true;
             });
 
-            // Handle laser storm powerup
-            const laserLevel = gameState.permanentPowerups.LASER_STORM || 0;
-            if (laserLevel > 0 && (gameState.enemies.length > 0 || gameState.boss)) {
-                if (gameState.lastLaserTimes.length !== laserLevel) {
-                    const now = Date.now();
-                    gameState.lastLaserTimes = new Array(laserLevel).fill(0).map((_, i) => now - i * (4000 / laserLevel));
-                }
-                const now = Date.now();
-                const fromX = gameState.player.x + 16;
-                const fromY = gameState.player.y;
-                for (let i = 0; i < laserLevel; i++) {
-                    if (now > gameState.lastLaserTimes[i] + 4000) {
-                        // Find nearest target (enemy or boss)
-                        let nearest = null;
-                        let minDist = Infinity;
-                        let isBossTarget = false;
-
-                        // Check enemies
-                        gameState.enemies.forEach(enemy => {
-                            const enemyData = ENEMY_TYPES[enemy.type];
-                            const ex = enemy.x + enemyData.size / 2;
-                            const ey = enemy.y + enemyData.size / 2;
-                            const dist = (ex - fromX) ** 2 + (ey - fromY) ** 2;
-                            if (dist < minDist) {
-                                minDist = dist;
-                                nearest = enemy;
-                                isBossTarget = false;
-                            }
-                        });
-
-                        // Check boss if present
-                        if (gameState.boss) {
-                            const bx = gameState.boss.x + 40;
-                            const by = gameState.boss.y + 30;
-                            const dist = (bx - fromX) ** 2 + (by - fromY) ** 2;
-                            if (dist < minDist) {
-                                minDist = dist;
-                                nearest = gameState.boss;
-                                isBossTarget = true;
-                            }
-                        }
-
-                        if (nearest) {
-                            let toX, toY, enemyData;
-                            if (isBossTarget) {
-                                toX = nearest.x + 40;
-                                toY = nearest.y + 30;
-                            } else {
-                                enemyData = ENEMY_TYPES[nearest.type];
-                                toX = nearest.x + enemyData.size / 2;
-                                toY = nearest.y + enemyData.size / 2;
-                            }
-
-                            const dx = toX - fromX;
-                            const dy = toY - fromY;
-                            const length = Math.sqrt(dx * dx + dy * dy);
-                            const angle = Math.atan2(dy, dx);
-
-                            // Create beam visual
-                            const beam = document.createElement('div');
-                            beam.className = 'laser-beam';
-                            beam.style.background = 'linear-gradient(to bottom, #00ffff, #00aaff)';
-                            beam.style.boxShadow = '0 0 10px #00ffff';
-                            beam.style.left = `${fromX}px`;
-                            beam.style.top = `${fromY}px`;
-                            beam.style.height = `${length}px`;
-                            beam.style.transformOrigin = 'top left';
-                            beam.style.transform = `rotate(${angle}rad)`;
-                            canvas.appendChild(beam);
-                            setTimeout(() => beam.remove(), 200);
-
-                            // Apply damage
-                            let damage = 5 + gameState.permanentPowerups.LASER_STORM;
-                            if (isBossTarget) {
-                                if (nearest.shieldActive) {
-                                    damage = Math.max(1, Math.floor(damage / 3));
-                                }
-                                nearest.health -= damage;
-                                updateBossHealth();
-                                if (nearest.health <= 0) {
-                                    destroyBoss();
-                                }
-                            } else {
-                                if (nearest.shielded) {
-                                    damage = Math.max(1, Math.floor(damage / 2));
-                                    if (Math.random() < 0.3) {
-                                        nearest.shielded = false;
-                                        nearest.element.style.filter = 'none';
-                                    }
-                                }
-                                nearest.health -= damage;
-                                if (nearest.health <= 0) {
-                                    const index = gameState.enemies.indexOf(nearest);
-                                    createExplosion(toX, toY);
-                                    spawnPowerup(toX, toY);
-                                    nearest.element.remove();
-                                    gameState.enemies.splice(index, 1);
-                                    gameState.score += enemyData.score * (1 + gameState.wave / 10);
-                                    scoreEl.textContent = Math.floor(gameState.score);
-                                }
-                            }
-
-                            gameState.lastLaserTimes[i] = now;
-                        }
-                    }
-                }
-            }
-
-            enemyCountEl.textContent = gameState.enemies.length + gameState.enemiesRemaining;
+            enemyCountEl.textContent = gameState.enemies.length;
 
             // Check wave completion
-            const waveComplete = gameState.enemiesRemaining <= 0 && 
-                                gameState.enemies.length === 0 && 
+            const waveComplete = gameState.enemies.length === 0 && 
                                 !gameState.boss && 
                                 !gameState.waveComplete;
             
@@ -2073,7 +2291,6 @@
             
             if (e.code === 'Space' && gameState.playing) {
                 e.preventDefault();
-                playerShoot();
             }
 
             if (e.code === 'Escape' && gameState.playing) {
@@ -2087,7 +2304,18 @@
 
         canvas.addEventListener('click', (e) => {
             if (gameState.playing) {
-                playerShoot();
+                const now = Date.now();
+                let fireInterval = 300;
+                if (gameState.permanentPowerups.RAPID) {
+                    fireInterval -= gameState.permanentPowerups.RAPID * 50;
+                }
+                if (gameState.temporaryPowerups.MEGA_RAPID) {
+                    fireInterval = 50;
+                }
+                if (now - gameState.lastShoot >= fireInterval) {
+                    gameState.lastShoot = now;
+                    shootForEntity(gameState.player, 16);
+                }
             }
         });
 
@@ -2112,10 +2340,12 @@
 
         // Game functions
         function startGame() {
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
             instructionsEl.style.display = 'none';
             gameState.playing = true;
-            gameState.player.x = window.innerWidth / 2 - 16;
-            gameState.player.y = window.innerHeight - 80;
+            gameState.player.x = width / 2 - 16;
+            gameState.player.y = height - 100;
             gameState.player.health = 100;
             gameState.player.lives = 3;
             gameState.score = 0;
@@ -2178,6 +2408,7 @@
             gameState.explosions.forEach(explosion => explosion.element.remove());
             gameState.powerups.forEach(powerup => powerup.element.remove());
             gameState.laserBeams.forEach(laser => laser.element.remove());
+            gameState.companions.forEach(comp => comp.element.remove());
             
             if (gameState.boss) {
                 gameState.boss.element.remove();
@@ -2191,8 +2422,8 @@
                 playing: false,
                 paused: false,
                 player: { 
-                    x: window.innerWidth / 2 - 16, 
-                    y: window.innerHeight - 80, 
+                    x: 0, 
+                    y: 0, 
                     health: 100, 
                     speed: 6,
                     lives: 3
@@ -2215,7 +2446,7 @@
                 boss: null,
                 bossSpawnTimer: 0,
                 laserBeams: [],
-                lastLaserTimes: []
+                companions: []
             };
             
             gameOverEl.style.display = 'none';
